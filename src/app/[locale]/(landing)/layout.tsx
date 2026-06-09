@@ -32,12 +32,13 @@ export default function LandingLayout({
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href={`/${currentLocale}`} className="flex items-center">
             <Image
-              src="/logo.png"
+              src="/logo.svg"
               alt="Glory"
               width={100}
               height={32}
               className="h-8 w-auto"
               priority
+              unoptimized
             />
           </Link>
 
@@ -129,11 +130,12 @@ export default function LandingLayout({
         <div className="container mx-auto px-4 text-center">
           <div className="mb-4 flex justify-center">
             <Image
-              src="/logo.png"
+              src="/logo.svg"
               alt="Glory"
               width={100}
               height={32}
               className="h-8 w-auto opacity-80"
+              unoptimized
             />
           </div>
           <p className="text-sm text-gray-500">

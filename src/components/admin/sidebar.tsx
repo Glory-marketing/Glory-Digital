@@ -41,11 +41,12 @@ export function Sidebar({ locale }: { locale: string }) {
     <aside className="fixed left-0 top-0 z-30 flex h-screen w-64 flex-col border-r border-white/5 bg-[#121212]">
       <div className="flex items-center gap-3 border-b border-white/5 px-6 py-5">
         <Image
-          src="/logo.png"
+          src="/logo.svg"
           alt="Glory"
           width={80}
           height={24}
           className="h-6 w-auto"
+          unoptimized
         />
         <span className="text-xs text-gray-500">Admin</span>
       </div>
