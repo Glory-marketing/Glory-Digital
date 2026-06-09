@@ -38,8 +38,10 @@ export function AITools({ visible }: { visible: boolean }) {
         body: JSON.stringify({ url }),
       });
       const data = await res.json();
-      setResult(data);
-      setShowModal(true);
+      if (data && typeof data.score === "number") {
+        setResult(data);
+        setShowModal(true);
+      }
     } catch {
       // handle error
     }
@@ -131,7 +133,7 @@ export function AITools({ visible }: { visible: boolean }) {
               <div key={section.label}>
                 <h4 className="mb-2 font-medium text-[#BF953F]">{section.label}</h4>
                 <ul className="space-y-1">
-                  {section.items.map((item, i) => (
+                  {section.items?.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-gray-400">
                       <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#BF953F]" />
                       {item}
