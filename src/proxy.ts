@@ -13,7 +13,7 @@ const intlMiddleware = createMiddleware({
 
 const protectedPaths = ["/glory-admin"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isProtected = protectedPaths.some((p) => pathname.includes(p));
