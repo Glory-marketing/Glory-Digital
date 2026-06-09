@@ -14,68 +14,52 @@ const intlMiddleware = createMiddleware({
 const protectedPaths = ["/glory-admin"];
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  try {
+    const { pathname } = request.nextUrl;
 
-  const isProtected = protectedPaths.some((p) => pathname.includes(p));
-  const isApi = pathname.startsWith("/api");
-  const isStatic = pathname.includes("/_next") || pathname.includes("/favicon");
+    const isProtected = protectedPaths.some((p) => pathname.includes(p));
+    const isApi = pathname.startsWith("/api");
+    const isStatic = pathname.includes("/_next") || pathname.includes("/favicon");
 
-  if (isStatic) {
-    return NextResponse.next();
-  }
-
-  if (isApi) {
-    const origin = request.headers.get("origin");
-    const referer = request.headers.get("referer");
-    if (origin && referer) {
-      try {
-        const originUrl = new URL(origin);
-        const refererUrl = new URL(referer);
-        if (originUrl.hostname !== refererUrl.hostname && process.env.NODE_ENV !== "development") {
-          return new NextResponse("CSRF validation failed", { status: 403 });
-        }
-      } catch {
-        return new NextResponse("Invalid headers", { status: 400 });
-      }
+    if (isStatic) {
+      return NextResponse.next();
     }
-    const response = NextResponse.next();
-    response.headers.set("X-Robots-Tag", "noindex");
-    return response;
-  }
 
-  if (isProtected) {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
+    if (isApi) {
+      const response = NextResponse.next();
+      response.headers.set("X-Robots-Tag", "noindex");
+      return response;
+    }
+
+    if (isProtected) {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      if (!supabaseUrl || !supabaseKey) {
+        return NextResponse.redirect(new URL("/en", request.url));
+      }
+
+      const supabase = createServerClient(supabaseUrl, supabaseKey, {
         cookies: {
           getAll() {
             return request.cookies.getAll();
           },
           setAll() {},
         },
+      });
+
+      const { data } = await supabase.auth.getUser();
+      if (!data?.user) {
+        return NextResponse.redirect(new URL("/en", request.url));
       }
-    );
 
-    const { data } = await supabase.auth.getUser();
-    if (!data?.user) {
-      const url = new URL("/en", request.url);
-      return NextResponse.redirect(url);
+      return NextResponse.next();
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-
-    if (!profile || !["Super_Admin", "Admin", "Editor"].includes(profile.role)) {
-      const url = new URL("/en", request.url);
-      return NextResponse.redirect(url);
-    }
+    return intlMiddleware(request);
+  } catch {
+    return intlMiddleware(request);
   }
-
-  return intlMiddleware(request);
 }
 
 export const config = {
