@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export function CustomCursor() {
@@ -8,7 +8,7 @@ export function CustomCursor() {
   const cursorY = useMotionValue(-100);
   const springX = useSpring(cursorX, { stiffness: 500, damping: 28 });
   const springY = useSpring(cursorY, { stiffness: 500, damping: 28 });
-  const isHovering = useRef(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const move = (e: MouseEvent) => {
@@ -25,9 +25,9 @@ export function CustomCursor() {
         target.closest("a") ||
         target.closest("[data-interactive]")
       ) {
-        isHovering.current = true;
+        setIsHovering(true);
       } else {
-        isHovering.current = false;
+        setIsHovering(false);
       }
     };
 
@@ -62,9 +62,9 @@ export function CustomCursor() {
           translateY: "-50%",
         }}
         animate={{
-          width: isHovering.current ? 48 : 24,
-          height: isHovering.current ? 48 : 24,
-          opacity: isHovering.current ? 0.3 : 0.15,
+          width: isHovering ? 48 : 24,
+          height: isHovering ? 48 : 24,
+          opacity: isHovering ? 0.3 : 0.15,
         }}
       >
         <div className="h-full w-full rounded-full border border-[#BF953F]" />

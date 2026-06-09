@@ -45,6 +45,7 @@ function LightArrows() {
         ] as [number, number, number],
         rotation: Math.random() * Math.PI * 2,
         scale: 0.3 + Math.random() * 0.5,
+        opacity: 0.3 + Math.random() * 0.3,
       })),
     []
   );
@@ -62,7 +63,7 @@ function LightArrows() {
           <meshBasicMaterial
             color="#FCF6BA"
             transparent
-            opacity={0.3 + Math.random() * 0.3}
+            opacity={arrow.opacity}
           />
         </mesh>
       ))}

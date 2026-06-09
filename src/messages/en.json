@@ -36,6 +36,7 @@
   "contact": {
     "title": "Let's Create Together",
     "name": "Name",
+    "email": "Email",
     "service": "Service",
     "budget": "Budget Range",
     "brief": "Project Brief",
