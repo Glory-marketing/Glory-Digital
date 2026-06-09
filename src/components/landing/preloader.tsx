@@ -23,6 +23,13 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (ready) {
+      const timer = setTimeout(() => onComplete(), 900);
+      return () => clearTimeout(timer);
+    }
+  }, [ready, onComplete]);
+
   return (
     <AnimatePresence>
       {!ready && (
