@@ -10,11 +10,9 @@
   --gold-gradient: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b0b0b;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #0b0b0b;
+  --foreground: #ededed;
 }
 
 body {

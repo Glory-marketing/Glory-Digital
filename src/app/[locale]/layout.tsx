@@ -48,7 +48,7 @@ export default async function LocaleLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen">
+      <body className="min-h-screen bg-[#0B0B0B]">
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
             <SupabaseProvider>
