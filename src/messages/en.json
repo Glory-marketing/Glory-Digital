@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "about": "About",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "hero": {
+    "headline": "We Build Digital Glory",
+    "subheadline": "Premium marketing, design & development for brands that demand excellence",
+    "cta": "Start Your Journey",
+    "secondary": "View Our Work"
+  },
+  "services": {
+    "title": "Our Services",
+    "marketing": "Marketing",
+    "marketing_desc": "Data-driven strategies that amplify your brand's reach and ROI",
+    "design": "Design",
+    "design_desc": "Visual identities that captivate and communicate your brand story",
+    "coding": "Development",
+    "coding_desc": "Custom platforms built with cutting-edge technology"
+  },
+  "about": {
+    "title": "About Glory",
+    "content": "We are a team of passionate creators, strategists, and engineers dedicated to building digital experiences that leave a lasting impression."
+  },
+  "portfolio": {
+    "title": "Our Work",
+    "view_project": "View Project"
+  },
+  "testimonials": {
+    "title": "What Clients Say"
+  },
+  "contact": {
+    "title": "Let's Create Together",
+    "name": "Name",
+    "service": "Service",
+    "budget": "Budget Range",
+    "brief": "Project Brief",
+    "submit": "Send Message",
+    "success": "Thank you! We'll be in touch shortly.",
+    "services": {
+      "marketing": "Marketing",
+      "design": "Design",
+      "development": "Development",
+      "full": "Full Package"
+    },
+    "budgets": {
+      "small": "$1k - $5k",
+      "medium": "$5k - $15k",
+      "large": "$15k - $50k",
+      "enterprise": "$50k+"
+    }
+  },
+  "chatbot": {
+    "title": "Glory AI Assistant",
+    "placeholder": "Ask me anything...",
+    "greeting": "Hello! I'm Glory AI. How can I help you elevate your brand today?"
+  },
+  "analyzer": {
+    "title": "Free Website Audit",
+    "placeholder": "Enter your website URL",
+    "submit": "Analyze",
+    "loading": "Analyzing your site...",
+    "error": "Please enter a valid URL"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "page_builder": "Page Builder",
+    "leads": "Leads",
+    "vault": "API Vault",
+    "ai_manager": "AI Manager",
+    "analytics": "Analytics",
+    "team": "Team",
+    "logout": "Logout"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create"
+  }
+}
