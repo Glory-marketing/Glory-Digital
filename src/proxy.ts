@@ -50,7 +50,8 @@ export async function proxy(request: NextRequest) {
 
       const { data } = await supabase.auth.getUser();
       if (!data?.user) {
-        return NextResponse.redirect(new URL("/en", request.url));
+        const locale = pathname.split("/")[1] || "en";
+        return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
       }
 
       return NextResponse.next();

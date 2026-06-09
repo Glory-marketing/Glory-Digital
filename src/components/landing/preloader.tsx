@@ -48,13 +48,12 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
             className="relative mb-8"
           >
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               alt="Glory"
               width={180}
               height={60}
               className="h-auto w-44"
               priority
-              unoptimized
             />
             <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#BF953F]/20 to-transparent blur-2xl" />
           </motion.div>
