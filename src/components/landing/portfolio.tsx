@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 interface Project {
   id: string;
@@ -14,8 +14,12 @@ interface Project {
   image_url: string;
 }
 
+const categoryTranslations: Record<string, string> = {};
+
 export function Portfolio({ visible }: { visible: boolean }) {
   const t = useTranslations("portfolio");
+  const locale = useLocale();
+  const tc = useTranslations("services");
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
@@ -32,6 +36,17 @@ export function Portfolio({ visible }: { visible: boolean }) {
     { id: "2", title_en: "E-Commerce Platform", title_ar: "منصة تجارة إلكترونية", category: "Development", description_en: "", description_ar: "", image_url: "" },
     { id: "3", title_en: "Digital Marketing Campaign", title_ar: "حملة تسويق إلكتروني", category: "Marketing", description_en: "", description_ar: "", image_url: "" },
   ];
+
+  const getCategory = (cat: string) => {
+    const key = cat.toLowerCase();
+    if (key === "design") return tc("design");
+    if (key === "development" || key === "coding") return tc("coding");
+    if (key === "marketing") return tc("marketing");
+    return cat;
+  };
+
+  const getTitle = (p: Project) => locale === "ar" ? (p.title_ar || p.title_en) : p.title_en;
+  const getDesc = (p: Project) => locale === "ar" ? (p.description_ar || p.description_en) : p.description_en;
 
   return (
     <section id="portfolio" className="relative py-24">
@@ -66,13 +81,13 @@ export function Portfolio({ visible }: { visible: boolean }) {
                   <span className="text-sm text-[#FCF6BA]">{t("view_project")}</span>
                 </div>
               </div>
-              <div className="p-4">
-                <span className="text-xs text-[#BF953F]">{project.category}</span>
+                <div className="p-4">
+                <span className="text-xs text-[#BF953F]">{getCategory(project.category)}</span>
                 <h3 className="mt-1 text-lg font-semibold text-white group-hover:text-[#FCF6BA] transition-colors">
-                  {project.title_en}
+                  {getTitle(project)}
                 </h3>
-                {project.description_en && (
-                  <p className="mt-1 text-xs text-gray-500 line-clamp-2">{project.description_en}</p>
+                {getDesc(project) && (
+                  <p className="mt-1 text-xs text-gray-500 line-clamp-2">{getDesc(project)}</p>
                 )}
               </div>
             </motion.div>

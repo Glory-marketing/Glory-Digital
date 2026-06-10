@@ -116,8 +116,27 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
             <div className="grid gap-4 md:grid-cols-2">
               <textarea name="description_en" placeholder={t("description_en")} rows={3}
                 className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
-              <textarea name="description_ar" placeholder={t("description_ar")} rows={3}
-                className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
+              <div>
+                <textarea name="description_ar" placeholder={t("description_ar")} rows={3}
+                  className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
+                <Button type="button" size="sm" variant="ghost" className="text-xs mt-1"
+                  onClick={async (e) => {
+                    const container = (e.target as HTMLElement).closest('div');
+                    const arTa = container?.querySelector('textarea') as HTMLTextAreaElement;
+                    const enDiv = container?.closest('.grid')?.querySelector('textarea[name="description_en"]') as HTMLTextAreaElement;
+                    if (arTa?.value && enDiv) {
+                      const res = await fetch("/api/chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: `Translate this Arabic text to professional English for a marketing company website. Return ONLY the English translation, no explanation: "${arTa.value}"` }),
+                      });
+                      const data = await res.json();
+                      if (data.content) enDiv.value = data.content;
+                    }
+                  }}>
+                  🔄 Translate to English
+                </Button>
+              </div>
             </div>
             <Button type="submit">{tc("create")}</Button>
           </form>
@@ -145,8 +164,26 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
                 <div className="grid gap-3 md:grid-cols-2">
                   <textarea name="description_en" defaultValue={p.description_en} rows={2}
                     className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
-                  <textarea name="description_ar" defaultValue={p.description_ar} rows={2}
-                    className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
+                  <div>
+                    <textarea name="description_ar" defaultValue={p.description_ar} rows={2}
+                      className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
+                    <Button type="button" size="sm" variant="ghost" className="text-xs mt-1"
+                      onClick={async (e) => {
+                        const ta = (e.target as HTMLElement).closest('div')?.querySelector('textarea') as HTMLTextAreaElement;
+                        const enTa = (e.target as HTMLElement).closest('.grid')?.querySelector('textarea[name="description_en"]') as HTMLTextAreaElement;
+                        if (ta?.value && enTa) {
+                          const res = await fetch("/api/chat", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ message: `Translate this Arabic text to professional English for a marketing company website. Return ONLY the English translation, no explanation: "${ta.value}"` }),
+                          });
+                          const data = await res.json();
+                          if (data.content) enTa.value = data.content;
+                        }
+                      }}>
+                      🔄 Translate to English
+                    </Button>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button type="submit" size="sm">{tc("save")}</Button>

@@ -163,14 +163,14 @@ export function Hero({ locale }: HeroProps) {
           className="flex gap-4"
         >
           <a
-            href={`/${locale}#contact`}
+            href={`/${locale}/contact`}
             data-interactive
             className="rounded-lg bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] px-8 py-3 font-medium text-black transition-all hover:brightness-110"
           >
             {t("cta")}
           </a>
           <a
-            href={`/${locale}#portfolio`}
+            href={`/${locale}/portfolio`}
             data-interactive
             className="rounded-lg border border-[#BF953F]/30 px-8 py-3 font-medium text-[#FCF6BA] transition-all hover:bg-[#BF953F]/10"
           >

@@ -22,9 +22,11 @@ const subServices: Record<string, string[]> = {
 export function ContactForm({
   locale,
   messages,
+  fullPage,
 }: {
   locale: string;
   messages: Record<string, any>;
+  fullPage?: boolean;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -92,17 +94,23 @@ export function ContactForm({
     );
   }
 
-  return (
-    <section id="contact" className="relative py-24">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-16 text-center"
-        >
-          <h2 className="text-4xl font-bold text-white">{t.title}</h2>
-        </motion.div>
+  const section = (content: React.ReactNode) =>
+    !fullPage ? content : (
+      <section id="contact" className="relative pb-24">
+        <div className="container mx-auto px-4">{content}</div>
+      </section>
+    );
+
+  return section(
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="mb-16 text-center"
+      >
+        <h2 className="text-4xl font-bold text-white">{t.title}</h2>
+      </motion.div>
 
         <motion.form
           initial={{ opacity: 0, y: 20 }}
@@ -166,7 +174,6 @@ export function ContactForm({
             {submitting ? (t.sending || "Sending...") : t.submit}
           </Button>
         </motion.form>
-      </div>
-    </section>
-  );
+      </>
+    );
 }

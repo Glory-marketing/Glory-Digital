@@ -36,19 +36,31 @@ export default function LandingLayout({
 
           <nav className="hidden items-center gap-8 md:flex">
             <Link
-              href={`/${locale}#services`}
+              href={`/${locale}`}
+              className="text-sm text-gray-400 transition-colors hover:text-white"
+            >
+              {t("home")}
+            </Link>
+            <Link
+              href={`/${locale}/services`}
               className="text-sm text-gray-400 transition-colors hover:text-white"
             >
               {t("services")}
             </Link>
             <Link
-              href={`/${locale}#portfolio`}
+              href={`/${locale}/portfolio`}
               className="text-sm text-gray-400 transition-colors hover:text-white"
             >
               {t("portfolio")}
             </Link>
             <Link
-              href={`/${locale}#contact`}
+              href={`/${locale}/about`}
+              className="text-sm text-gray-400 transition-colors hover:text-white"
+            >
+              {t("about")}
+            </Link>
+            <Link
+              href={`/${locale}/contact`}
               className="text-sm text-gray-400 transition-colors hover:text-white"
             >
               {t("contact")}
@@ -84,21 +96,35 @@ export default function LandingLayout({
           <div className="border-t border-white/5 bg-[#0B0B0B] px-4 py-4 md:hidden">
             <nav className="flex flex-col gap-4">
               <Link
-                href={`/${locale}#services`}
+                href={`/${locale}`}
+                onClick={() => setMobileMenu(false)}
+                className="text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                {t("home")}
+              </Link>
+              <Link
+                href={`/${locale}/services`}
                 onClick={() => setMobileMenu(false)}
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 {t("services")}
               </Link>
               <Link
-                href={`/${locale}#portfolio`}
+                href={`/${locale}/portfolio`}
                 onClick={() => setMobileMenu(false)}
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 {t("portfolio")}
               </Link>
               <Link
-                href={`/${locale}#contact`}
+                href={`/${locale}/about`}
+                onClick={() => setMobileMenu(false)}
+                className="text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                {t("about")}
+              </Link>
+              <Link
+                href={`/${locale}/contact`}
                 onClick={() => setMobileMenu(false)}
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
@@ -157,9 +183,9 @@ export default function LandingLayout({
                 {t("quick_links")}
               </h4>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li><Link href={`/${locale}#services`} className="hover:text-[#FCF6BA] transition-colors">{t("services")}</Link></li>
-                <li><Link href={`/${locale}#portfolio`} className="hover:text-[#FCF6BA] transition-colors">{t("portfolio")}</Link></li>
-                <li><Link href={`/${locale}#contact`} className="hover:text-[#FCF6BA] transition-colors">{t("contact")}</Link></li>
+                <li><Link href={`/${locale}`} className="hover:text-[#FCF6BA] transition-colors">{t("home")}</Link></li>
+                <li><Link href={`/${locale}/services`} className="hover:text-[#FCF6BA] transition-colors">{t("services")}</Link></li>
+                <li><Link href={`/${locale}/portfolio`} className="hover:text-[#FCF6BA] transition-colors">{t("portfolio")}</Link></li>
               </ul>
             </div>
             <div>

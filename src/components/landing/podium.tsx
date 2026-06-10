@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Text3D, Center } from "@react-three/drei";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import * as THREE from "three";
 
 interface ServiceItem {
@@ -70,13 +70,22 @@ function PodiumTile({ position, color, label, index, onHover, isHovered }: Podiu
   );
 }
 
-function PodiumScene() {
+function PodiumScene({ locale }: { locale: string }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+  const ts = (label: string) => {
+    if (locale === "ar") {
+      if (label === "Marketing") return "تسويق";
+      if (label === "Design") return "تصميم";
+      if (label === "Coding") return "تطوير";
+    }
+    return label;
+  };
+
   const tiles = [
-    { position: [-2.5, 0, 0] as [number, number, number], color: "#BF953F", label: "Marketing" },
-    { position: [0, 0, 0] as [number, number, number], color: "#FCF6BA", label: "Design" },
-    { position: [2.5, 0, 0] as [number, number, number], color: "#B38728", label: "Coding" },
+    { position: [-2.5, 0, 0] as [number, number, number], color: "#BF953F", label: ts("Marketing") },
+    { position: [0, 0, 0] as [number, number, number], color: "#FCF6BA", label: ts("Design") },
+    { position: [2.5, 0, 0] as [number, number, number], color: "#B38728", label: ts("Coding") },
   ];
 
   return (
@@ -105,6 +114,7 @@ const iconMap: Record<string, string> = {
 
 export function ServicesPodium() {
   const t = useTranslations("services");
+  const locale = useLocale();
   const [services, setServices] = useState<ServiceItem[]>([]);
 
   useEffect(() => {
@@ -114,11 +124,16 @@ export function ServicesPodium() {
       .catch(() => {});
   }, []);
 
-  const displayServices = services.length > 0 ? services : [
-    { id: "1", name_en: "Marketing Campaigns", name_ar: "حملات تسويقية", description_en: "Data-driven strategies that amplify your brand", description_ar: "", icon: "trending_up", price: "", image_url: "" },
-    { id: "2", name_en: "Printing Materials", name_ar: "مطبوعات", description_en: "High-quality printing for all your needs", description_ar: "", icon: "print", price: "", image_url: "" },
-    { id: "3", name_en: "Digital Marketing", name_ar: "تسويق إلكتروني", description_en: "Full-service digital marketing", description_ar: "", icon: "devices", price: "", image_url: "" },
+  const defaultServices: ServiceItem[] = [
+    { id: "1", name_en: "Marketing Campaigns", name_ar: "حملات تسويقية", description_en: "Data-driven strategies that amplify your brand", description_ar: "استراتيجيات مدعومة بالبيانات لتضخيم علامتك التجارية", icon: "trending_up", price: "", image_url: "" },
+    { id: "2", name_en: "Printing Materials", name_ar: "مطبوعات", description_en: "High-quality printing for all your needs", description_ar: "طباعة عالية الجودة لجميع احتياجاتك", icon: "print", price: "", image_url: "" },
+    { id: "3", name_en: "Digital Marketing", name_ar: "تسويق إلكتروني", description_en: "Full-service digital marketing", description_ar: "تسويق إلكتروني متكامل الخدمات", icon: "devices", price: "", image_url: "" },
   ];
+
+  const displayServices = services.length > 0 ? services : defaultServices;
+
+  const getName = (s: ServiceItem) => locale === "ar" ? (s.name_ar || s.name_en) : s.name_en;
+  const getDesc = (s: ServiceItem) => locale === "ar" ? (s.description_ar || s.description_en) : s.description_en;
 
   return (
     <section className="relative py-24" id="services">
@@ -137,7 +152,7 @@ export function ServicesPodium() {
 
         <div className="mx-auto h-[400px] w-full max-w-4xl">
           <Canvas camera={{ position: [0, 2, 5], fov: 45 }}>
-            <PodiumScene />
+            <PodiumScene locale={locale} />
           </Canvas>
         </div>
 
@@ -153,8 +168,8 @@ export function ServicesPodium() {
               <div className="mx-auto mb-4 h-12 w-12 rounded-lg bg-gradient-to-br from-[#BF953F]/20 to-[#B38728]/20 flex items-center justify-center text-xl">
                 {iconMap[s.icon] || "✦"}
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">{s.name_en}</h3>
-              <p className="text-sm text-gray-400">{s.description_en}</p>
+              <h3 className="mb-2 text-lg font-semibold text-white">{getName(s)}</h3>
+              <p className="text-sm text-gray-400">{getDesc(s)}</p>
               {s.price && (
                 <p className="mt-2 text-sm font-medium text-[#FCF6BA]">{s.price}</p>
               )}

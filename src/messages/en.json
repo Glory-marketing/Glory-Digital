@@ -21,6 +21,8 @@
   },
   "services": {
     "title": "Our Services",
+    "page_title": "Our Services",
+    "page_desc": "Premium marketing, design & development solutions for your brand",
     "marketing": "Marketing",
     "marketing_desc": "Data-driven strategies that amplify your brand's reach and ROI",
     "design": "Design",
@@ -30,11 +32,15 @@
   },
   "about": {
     "title": "About Glory",
-    "content": "We are a team of passionate creators, strategists, and engineers dedicated to building digital experiences that leave a lasting impression."
+    "content": "We are a team of passionate creators, strategists, and engineers dedicated to building digital experiences that leave a lasting impression.",
+    "page_title": "About Us",
+    "page_desc": "Meet the team behind Glory"
   },
   "portfolio": {
     "title": "Our Work",
-    "view_project": "View Project"
+    "view_project": "View Project",
+    "page_title": "Our Portfolio",
+    "page_desc": "Explore our latest projects and see how we bring brands to life."
   },
   "testimonials": {
     "title": "What Clients Say"
