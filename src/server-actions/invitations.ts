@@ -34,6 +34,10 @@ export async function sendInvitation(email: string, role: string) {
     Date.now() + INVITATION_EXPIRY_HOURS * 60 * 60 * 1000
   ).toISOString();
 
+  // Get the app URL for the invite link
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://glory-digital.vercel.app";
+  const inviteLink = `${appUrl}/en/accept-invite?token=${token}`;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const invDb = supabase.from("invitations") as any;
   const { error } = await invDb.insert({
@@ -47,7 +51,7 @@ export async function sendInvitation(email: string, role: string) {
   if (error) throw new Error("Failed to create invitation");
 
   revalidatePath("/[locale]/glory-admin/team");
-  return { success: true, token };
+  return { success: true, token, inviteLink };
 }
 
 export async function acceptInvitation(token: string, password: string) {
@@ -75,16 +79,11 @@ export async function acceptInvitation(token: string, password: string) {
 
   if (authError || !authData.user) throw new Error("Failed to create user");
 
+  // Update profile role (trigger creates it as 'Editor')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const profDb = supabase.from("profiles") as any;
-  const { error: profileError } = await profDb.insert({
-    id: authData.user.id,
-    email: invitation.email,
-    role: invitation.role,
-    is_active: true,
-  });
-
-  if (profileError) throw new Error("Failed to create profile");
+  await (adminClient.from("profiles") as any)
+    .update({ role: invitation.role, is_active: true })
+    .eq("id", authData.user.id);
 
   await invDb
     .update({ accepted_at: new Date().toISOString() })

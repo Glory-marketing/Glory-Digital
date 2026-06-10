@@ -14,7 +14,6 @@ export async function submitLead(formData: FormData) {
     email: formData.get("email") as string,
     phone: formData.get("phone") as string,
     service: formData.get("service") as string,
-    budget: formData.get("budget") as string,
     brief: formData.get("brief") as string,
   };
 
@@ -27,7 +26,6 @@ export async function submitLead(formData: FormData) {
     email: validated.email,
     phone: validated.phone || null,
     service: validated.service,
-    budget: validated.budget || null,
     brief: validated.brief || null,
     locale: headersList.get("accept-language")?.startsWith("ar") ? "ar" : "en",
     utm_source: (formData.get("utm_source") as string) || null,

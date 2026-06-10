@@ -61,11 +61,11 @@ export function AITools({ visible }: { visible: boolean }) {
         body: JSON.stringify({ message: chatInput }),
       });
       const data = await res.json();
-      setChatMessages((prev) => [...prev, data]);
+      setChatMessages((prev) => [...prev, { role: "assistant", content: data.error || data.content || "..." }]);
     } catch {
       setChatMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, I'm unavailable right now." },
+        { role: "assistant", content: chatInput.match(/[\u0600-\u06FF]/) ? "عذراً، غير متاح حالياً." : "Sorry, I'm unavailable right now." },
       ]);
     }
   };
@@ -169,7 +169,7 @@ export function AITools({ visible }: { visible: boolean }) {
           <div className="flex-1 overflow-y-auto space-y-4 px-1">
             {chatMessages.length === 0 && (
               <div className="text-center text-sm text-gray-500 pt-8">
-                Hello! I'm Glory AI. How can I help you elevate your brand today?
+                Hello! I'm Glory AI. How can I help you today?
               </div>
             )}
             {chatMessages.map((msg, i) => (

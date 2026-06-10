@@ -37,6 +37,7 @@ export function TeamInvite({
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("Editor");
   const [sending, setSending] = useState(false);
+  const [inviteLink, setInviteLink] = useState("");
 
   const canInvite =
     profile?.role === "Super_Admin" || profile?.role === "Admin";
@@ -45,11 +46,17 @@ export function TeamInvite({
     if (!email) return;
     setSending(true);
     try {
-      await sendInvitation(email, role);
-      toast("Invitation sent!", "success");
+      const result = await sendInvitation(email, role);
+      if (result?.inviteLink) {
+        await navigator.clipboard.writeText(result.inviteLink);
+        setInviteLink(result.inviteLink);
+        toast("تم نسخ رابط الدعوة! شاركه مع الشخص.", "success");
+      } else {
+        toast("تم إنشاء الدعوة!", "success");
+      }
       setEmail("");
     } catch {
-      toast("Failed to send invitation", "error");
+      toast("فشل إنشاء الدعوة", "error");
     }
     setSending(false);
   };
@@ -91,6 +98,12 @@ export function TeamInvite({
               {sending ? "Sending..." : "Invite"}
             </Button>
           </div>
+          {inviteLink && (
+            <div className="mt-3 rounded-lg border border-[#BF953F]/30 bg-[#BF953F]/5 px-3 py-2">
+              <p className="text-xs text-gray-400 mb-1">Invite link (copied to clipboard):</p>
+              <p className="text-sm text-[#FCF6BA] break-all">{inviteLink}</p>
+            </div>
+          )}
         </Card>
       )}
 

@@ -20,10 +20,9 @@ export async function proxy(request: NextRequest) {
     const isProtected = protectedPaths.some((p) => pathname.includes(p));
     const isApi = pathname.startsWith("/api");
     const isStatic = pathname.includes("/_next") || pathname.includes("/favicon");
+    const isLoginPage = pathname.includes("/login");
 
-    if (isStatic) {
-      return NextResponse.next();
-    }
+    if (isStatic) return NextResponse.next();
 
     if (isApi) {
       const response = NextResponse.next();
@@ -34,32 +33,34 @@ export async function proxy(request: NextRequest) {
     if (isProtected) {
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
       const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      if (!supabaseUrl || !supabaseKey) return NextResponse.redirect(new URL("/en", request.url));
 
-      if (!supabaseUrl || !supabaseKey) {
-        return NextResponse.redirect(new URL("/en", request.url));
-      }
+      let response = NextResponse.next();
 
       const supabase = createServerClient(supabaseUrl, supabaseKey, {
         cookies: {
-          getAll() {
-            return request.cookies.getAll();
+          getAll() { return request.cookies.getAll(); },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+            response = NextResponse.next({ headers: request.headers });
+            cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
           },
-          setAll() {},
         },
       });
 
       const { data } = await supabase.auth.getUser();
       if (!data?.user) {
-        const locale = pathname.split("/")[1] || "en";
-        return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+        return NextResponse.redirect(new URL("/en/login", request.url));
       }
 
-      return NextResponse.next();
+      return response;
     }
+
+    if (isLoginPage) return intlMiddleware(request);
 
     return intlMiddleware(request);
   } catch {
-    return intlMiddleware(request);
+    return NextResponse.redirect(new URL("/en/login", request.url));
   }
 }
 

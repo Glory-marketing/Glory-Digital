@@ -1,35 +1,61 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial, Sparkles } from "@react-three/drei";
+import { Float, Sparkles } from "@react-three/drei";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import * as THREE from "three";
 
-function GoldBulb() {
+function Logo3D() {
   const meshRef = useRef<THREE.Mesh>(null!);
+  const textureRef = useRef<THREE.Texture | null>(null);
 
   useFrame(({ clock }) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = clock.getElapsedTime() * 0.2;
-      meshRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.1) * 0.1;
+      meshRef.current.rotation.y = clock.getElapsedTime() * 0.4;
+      meshRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.3) * 0.1;
+      meshRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.6) * 0.2;
     }
   });
 
+  const texture = useMemo(() => {
+    const img = new Image();
+    img.src = "/logo.png";
+    const tex = new THREE.Texture(img);
+    img.onload = () => { tex.needsUpdate = true; };
+    textureRef.current = tex;
+    return tex;
+  }, []);
+
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-      <mesh ref={meshRef} position={[0, 0, 0]}>
-        <sphereGeometry args={[1.2, 64, 64]} />
-        <MeshDistortMaterial
-          color="#BF953F"
-          emissive="#BF953F"
-          emissiveIntensity={0.4}
-          roughness={0.2}
-          metalness={0.9}
-          distort={0.15}
-          speed={2}
-        />
-      </mesh>
+    <Float speed={0.8} rotationIntensity={0.05} floatIntensity={0.2}>
+      <group position={[0, 0.5, 0]}>
+        <mesh
+          ref={meshRef}
+          onPointerEnter={() => setHovered(true)}
+          onPointerLeave={() => setHovered(false)}
+        >
+          <planeGeometry args={[1.6, 1.6]} />
+          <meshBasicMaterial
+            map={texture}
+            transparent
+            side={THREE.DoubleSide}
+            depthWrite={false}
+          />
+        </mesh>
+        <mesh position={[0, 0, -0.03]}>
+          <ringGeometry args={[0.85, 0.95, 64]} />
+          <meshBasicMaterial
+            color="#BF953F"
+            transparent
+            opacity={hovered ? 0.6 : 0.25}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      </group>
     </Float>
   );
 }
@@ -77,7 +103,7 @@ function Scene() {
       <ambientLight intensity={0.2} />
       <directionalLight position={[5, 5, 5]} intensity={0.8} color="#BF953F" />
       <pointLight position={[-3, 2, -2]} intensity={0.5} color="#FCF6BA" />
-      <GoldBulb />
+      <Logo3D />
       <LightArrows />
       <Sparkles
         count={100}
@@ -92,20 +118,21 @@ function Scene() {
 }
 
 interface HeroProps {
-  headline: string;
-  subheadline: string;
-  ctaText: string;
   locale: string;
 }
 
-export function Hero({ headline, subheadline, ctaText, locale }: HeroProps) {
+export function Hero({ locale }: HeroProps) {
+  const t = useTranslations("hero");
+
   return (
     <section className="relative h-screen w-full overflow-hidden bg-[#0B0B0B]">
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 4.5], fov: 45 }}>
+        <Canvas camera={{ position: [0, 0, 5], fov: 40 }}>
           <Scene />
         </Canvas>
       </div>
+
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/40 via-black/20 to-black/40" />
 
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center">
         <motion.h1
@@ -114,9 +141,9 @@ export function Hero({ headline, subheadline, ctaText, locale }: HeroProps) {
           transition={{ duration: 1, delay: 0.5 }}
           className="mb-6 max-w-4xl text-5xl font-bold leading-tight md:text-7xl"
         >
-          <span className="text-white">{headline.split(" ").slice(0, -1).join(" ")} </span>
+          <span className="text-white">{t("headline_prefix")} </span>
           <span className="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent">
-            {headline.split(" ").pop()}
+            {t("headline_highlight")}
           </span>
         </motion.h1>
 
@@ -126,7 +153,7 @@ export function Hero({ headline, subheadline, ctaText, locale }: HeroProps) {
           transition={{ duration: 1, delay: 0.7 }}
           className="mb-8 max-w-2xl text-lg text-gray-400 md:text-xl"
         >
-          {subheadline}
+          {t("subheadline")}
         </motion.p>
 
         <motion.div
@@ -140,14 +167,14 @@ export function Hero({ headline, subheadline, ctaText, locale }: HeroProps) {
             data-interactive
             className="rounded-lg bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] px-8 py-3 font-medium text-black transition-all hover:brightness-110"
           >
-            {ctaText}
+            {t("cta")}
           </a>
           <a
             href={`/${locale}#portfolio`}
             data-interactive
             className="rounded-lg border border-[#BF953F]/30 px-8 py-3 font-medium text-[#FCF6BA] transition-all hover:bg-[#BF953F]/10"
           >
-            View Our Work
+            {t("secondary")}
           </a>
         </motion.div>
       </div>

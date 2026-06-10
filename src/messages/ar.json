@@ -8,7 +8,8 @@
     "admin": "لوحة التحكم"
   },
   "hero": {
-    "headline": "نبني المجد الرقمي",
+    "headline_prefix": "نبني",
+    "headline_highlight": "المجد الرقمي",
     "subheadline": "تسويق، تصميم وتطوير مميز للعلامات التجارية التي تطمح للتميز",
     "cta": "ابدأ رحلتك",
     "secondary": "شاهد أعمالنا"
@@ -43,16 +44,34 @@
     "submit": "إرسال",
     "success": "شكراً لك! سنتواصل معك قريباً.",
     "services": {
-      "marketing": "تسويق",
-      "design": "تصميم",
-      "development": "تطوير",
-      "full": "حزمة كاملة"
-    },
-    "budgets": {
-      "small": "$1k - $5k",
-      "medium": "$5k - $15k",
-      "large": "$15k - $50k",
-      "enterprise": "$50k+"
+      "marketing": "حملة تسويقية",
+      "marketing_social": "تسويق عبر السوشيال ميديا",
+      "marketing_seo": "تحسين محركات البحث SEO",
+      "marketing_ads": "إعلانات جوجل",
+      "marketing_email": "البريد الإلكتروني التسويقي",
+      "marketing_content": "صناعة المحتوى",
+      "printing": "مطبوعات",
+      "print_cards": "بطاقات شخصية",
+      "print_flyers": "فلائر",
+      "print_brochures": "بروشورات",
+      "print_rollups": "رول أب",
+      "print_banners": "بانرات",
+      "print_catalogs": "كتالوجات",
+      "print_stickers": "ستيكرات",
+      "flyers": "بروشورات وفلائر",
+      "flyer_flyers": "فلائر",
+      "flyer_brochures": "بروشورات",
+      "flyer_catalogs": "كتالوجات",
+      "flyer_leaflets": "منشورات",
+      "flyer_menus": "قوائم طعام",
+      "digital": "تسويق إلكتروني",
+      "digital_web": "تصميم مواقع",
+      "digital_mobile": "تطبيقات جوال",
+      "digital_ecommerce": "متاجر إلكترونية",
+      "digital_uiux": "تصميم واجهات UX/UI",
+      "digital_branding": "هوية بصرية وعلامة تجارية",
+      "full": "الحزمة الكاملة",
+      "full_complete": "باقة تسويق متكاملة"
     }
   },
   "chatbot": {
@@ -69,6 +88,8 @@
   },
   "admin": {
     "dashboard": "لوحة التحكم",
+    "portfolio": "أعمالنا",
+    "services": "الخدمات",
     "page_builder": "بناء الصفحات",
     "leads": "العملاء المحتملين",
     "vault": "خزنة API",

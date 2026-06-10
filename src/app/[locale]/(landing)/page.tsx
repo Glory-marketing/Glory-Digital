@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useMessages } from "next-intl";
+import { useTranslations, useMessages } from "next-intl";
 import { Preloader } from "@/components/landing/preloader";
 import { Hero } from "@/components/landing/hero";
 import { ServicesPodium } from "@/components/landing/podium";
@@ -17,6 +17,7 @@ export default function LandingPage() {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || "en";
 
+  const t = useTranslations();
   const messages = useMessages();
 
   const [sections, setSections] = useState({
@@ -34,15 +35,11 @@ export default function LandingPage() {
       <Preloader onComplete={() => setLoading(false)} />
       {!loading && (
         <>
-          <Hero
-            headline="We Build Digital Glory"
-            subheadline="Premium marketing, design & development for brands that demand excellence"
-            ctaText="Start Your Journey"
-            locale={locale}
-          />
+          <Hero locale={locale} />
           <ServicesPodium />
           <About
-            content="We are a team of passionate creators, strategists, and engineers dedicated to building digital experiences that leave a lasting impression."
+            title={t("about.title")}
+            content={t("about.content")}
             visible={sections.about}
           />
           <Portfolio visible={sections.portfolio} />

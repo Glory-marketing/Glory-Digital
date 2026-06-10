@@ -3,12 +3,16 @@
 import { motion } from "framer-motion";
 
 interface AboutProps {
+  title: string;
   content: string;
   visible: boolean;
 }
 
-export function About({ content, visible }: AboutProps) {
+export function About({ title, content, visible }: AboutProps) {
   if (!visible) return null;
+
+  const words = title.split(" ");
+  const lastWord = words.pop();
 
   return (
     <section className="relative py-24">
@@ -20,7 +24,7 @@ export function About({ content, visible }: AboutProps) {
           className="mx-auto max-w-4xl text-center"
         >
           <h2 className="mb-6 text-4xl font-bold text-white">
-            About <span className="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent">Glory</span>
+            {words.join(" ")} <span className="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent">{lastWord}</span>
           </h2>
           <div className="prose prose-invert mx-auto">
             <p className="text-lg leading-relaxed text-gray-300">{content}</p>

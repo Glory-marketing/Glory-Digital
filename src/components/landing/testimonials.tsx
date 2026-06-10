@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 const testimonials = [
   {
@@ -21,6 +22,7 @@ const testimonials = [
 ];
 
 export function Testimonials({ visible }: { visible: boolean }) {
+  const t = useTranslations("testimonials");
   if (!visible) return null;
 
   return (
@@ -33,7 +35,7 @@ export function Testimonials({ visible }: { visible: boolean }) {
           className="mb-16 text-center"
         >
           <h2 className="text-4xl font-bold text-white">
-            What <span className="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent">Clients</span> Say
+            {t("title")}
           </h2>
         </motion.div>
 
