@@ -12,13 +12,17 @@ export const metadata: Metadata = {
   title: "Glory For Marketing",
   description: "Premium marketing, design & development for brands that demand excellence",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
   },
   openGraph: {
     title: "Glory For Marketing",
     description: "Premium marketing, design & development for brands that demand excellence",
-    images: ["/og-image.png"],
+    images: [{
+      url: "https://glory-digital.vercel.app/og-image.png",
+      width: 1200,
+      height: 630,
+    }],
     type: "website",
   },
 };
@@ -49,7 +53,7 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="min-h-screen bg-[#0B0B0B]">
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
             <SupabaseProvider>
               <ToastProvider>
