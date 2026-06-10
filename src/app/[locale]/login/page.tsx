@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { signInWithPassword } from "@/server-actions/auth";
+import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 
 function LoginForm() {
@@ -21,14 +21,14 @@ function LoginForm() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const result = await signInWithPassword(email, password);
-    if (result?.error) {
-      setError(result.error);
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setError(error.message);
       setLoading(false);
     } else {
       router.push(`/${locale}/glory-admin`);
     }
-    setLoading(false);
   }
 
   return (
