@@ -34,23 +34,28 @@ export function Sidebar({ locale }: { locale: string }) {
 
   return (
     <aside className="fixed left-0 top-0 z-30 flex h-screen w-64 flex-col border-r border-white/5 bg-[#121212]">
-      <div className="flex items-center justify-between border-b border-white/5 px-6 py-5">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/logo.png"
-            alt="Glory"
-            width={80}
-            height={24}
-            className="h-6 w-auto"
-          />
-          <span className="text-xs text-gray-500">Admin</span>
+      <div className="relative overflow-hidden border-b border-white/5 bg-gradient-to-r from-[#BF953F]/5 via-transparent to-transparent px-6 py-5">
+        <div className="absolute -right-8 -top-8 h-20 w-20 rounded-full bg-[#BF953F]/10 blur-2xl" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Image
+                src="/logo.png"
+                alt="Glory"
+                width={80}
+                height={24}
+                className="h-6 w-auto"
+              />
+            </div>
+            <span className="bg-gradient-to-r from-[#BF953F] to-[#FCF6BA] bg-clip-text text-xs font-semibold text-transparent">Admin</span>
+          </div>
+          <Link
+            href={`/${otherLocale}${pathname.replace(`/${locale}`, "") || "/glory-admin"}`}
+            className="rounded-md px-2 py-1 text-xs font-medium text-[#BF953F] hover:bg-[#BF953F]/10 transition-all"
+          >
+            {otherLocale === "ar" ? "AR" : "EN"}
+          </Link>
         </div>
-        <Link
-          href={`/${otherLocale}${pathname.replace(`/${locale}`, "") || "/glory-admin"}`}
-          className="rounded-md px-2 py-1 text-xs font-medium text-[#BF953F] hover:bg-[#BF953F]/10 transition-all"
-        >
-          {otherLocale === "ar" ? "AR" : "EN"}
-        </Link>
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
@@ -76,8 +81,9 @@ export function Sidebar({ locale }: { locale: string }) {
 
       <div className="border-t border-white/5 px-3 py-4">
         {profile && (
-          <div className="mb-3 px-3 text-xs text-gray-500">
-            {profile.full_name || "Admin"} — {profile.role}
+          <div className="mb-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2 text-xs">
+            <p className="text-gray-400">{profile.full_name || "Admin"}</p>
+            <p className="text-[#BF953F]">{profile.role}</p>
           </div>
         )}
         <button

@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
+import { useTranslations } from "next-intl";
 
 export function AIManagerForm() {
+  const t = useTranslations("admin");
   const { toast } = useToast();
   const [files, setFiles] = useState<FileList | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -18,7 +20,7 @@ export function AIManagerForm() {
     // In production: process files → embeddings → store in documents table
     await new Promise((r) => setTimeout(r, 1000));
 
-    toast("Document uploaded and processed!", "success");
+    toast(t("content_updated"), "success");
     setUploading(false);
   };
 
@@ -26,10 +28,10 @@ export function AIManagerForm() {
     <div className="space-y-6">
       <Card>
         <h3 className="mb-4 text-lg font-semibold text-white">
-          Knowledge Base Documents
+          {t("knowledge_base")}
         </h3>
         <p className="mb-4 text-sm text-gray-400">
-          Upload Markdown or PDF files to train the AI chatbot on your services.
+          {t("kb_desc")}
         </p>
         <div className="flex gap-3">
           <input
@@ -40,24 +42,24 @@ export function AIManagerForm() {
             className="file:mr-4 file:rounded-lg file:border-0 file:bg-[#BF953F]/10 file:px-4 file:py-2 file:text-sm file:text-[#FCF6BA] text-sm text-gray-400"
           />
           <Button onClick={handleUpload} disabled={!files?.length || uploading}>
-            {uploading ? "Processing..." : "Upload"}
+            {uploading ? t("processing") : t("upload")}
           </Button>
         </div>
       </Card>
 
       <Card>
         <h3 className="mb-4 text-lg font-semibold text-white">
-          Chatbot Configuration
+          {t("chatbot_config")}
         </h3>
         <div className="space-y-4">
           <Input
-            label="Bot Personality"
+            label={t("bot_personality")}
             placeholder="Friendly, professional marketing assistant"
             defaultValue="Friendly, professional marketing assistant"
           />
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-300">
-              Greeting Message
+              {t("greeting_message")}
             </label>
             <textarea
               className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white"
@@ -67,15 +69,15 @@ export function AIManagerForm() {
           </div>
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-300">
-              Qualifying Questions
+              {t("qualifying_questions")}
             </label>
             <textarea
               className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white"
               rows={3}
-              placeholder="One question per line..."
+              placeholder={t("questions_placeholder")}
             />
           </div>
-          <Button>Save Configuration</Button>
+          <Button>{t("save_config")}</Button>
         </div>
       </Card>
     </div>

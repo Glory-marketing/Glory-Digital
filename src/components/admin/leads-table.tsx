@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface Lead {
   id: string;
@@ -25,6 +26,7 @@ const statusColors: Record<string, "warning" | "success" | "default" | "gold"> =
 };
 
 export function LeadsTable({ leads }: { leads: Lead[] }) {
+  const t = useTranslations("admin");
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState(leads);
 
@@ -48,7 +50,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
   return (
     <div className="space-y-4">
       <Input
-        placeholder="Search by name or email..."
+        placeholder={t("search_leads")}
         value={search}
         onChange={handleSearch}
       />
@@ -57,12 +59,12 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/5 bg-white/[0.02]">
-              <th className="px-4 py-3 text-left font-medium text-gray-400">Name</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-400">Email</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-400">Service</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-400">Budget</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-400">Status</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-400">Date</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-400">{t("name")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-400">{t("email")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-400">{t("service")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-400">{t("budget")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-400">{t("status")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-400">{t("date")}</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -87,9 +89,9 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
                     onChange={(e) => handleStatusChange(lead.id, e.target.value)}
                     className="rounded border border-white/10 bg-black/50 px-2 py-1 text-xs text-white"
                   >
-                    <option value="new">New</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="qualified">Qualified</option>
+                    <option value="new">{t("new")}</option>
+                    <option value="contacted">{t("contacted")}</option>
+                    <option value="qualified">{t("qualified")}</option>
                   </select>
                 </td>
               </tr>

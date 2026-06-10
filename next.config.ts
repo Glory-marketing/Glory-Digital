@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https:",
               "font-src 'self' https://fonts.gstatic.com data:",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://api.groq.com",
               "frame-src 'self' https://js.stripe.com",
               "media-src 'self'",
               "object-src 'none'",

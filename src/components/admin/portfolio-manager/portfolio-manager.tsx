@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { createPortfolioProject, updatePortfolioProject, deletePortfolioProject } from "@/server-actions/portfolio";
+import { useTranslations } from "next-intl";
 
 interface Project {
   id: string;
@@ -19,7 +20,40 @@ interface Project {
   visible: boolean;
 }
 
+function ImageUpload({ urlName, filePreview }: { urlName: string; filePreview?: string }) {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) {
+      setPreview(URL.createObjectURL(f));
+    }
+  };
+
+  const displayUrl = preview || filePreview;
+
+  return (
+    <div className="space-y-2">
+      <input
+        name="image_file"
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="file:mr-3 file:rounded-lg file:border-0 file:bg-[#BF953F]/10 file:px-3 file:py-1.5 file:text-xs file:text-[#FCF6BA] text-xs text-gray-400"
+      />
+      <input name={urlName} type="hidden" />
+      {displayUrl && (
+        <div className="relative aspect-video rounded-lg overflow-hidden bg-black/30">
+          <img src={displayUrl} alt="" className="h-full w-full object-cover" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function PortfolioManager({ projects: initial }: { projects: Project[] }) {
+  const t = useTranslations("admin");
+  const tc = useTranslations("common");
   const [projects, setProjects] = useState(initial);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -31,10 +65,10 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
     const fd = new FormData(form);
     try {
       await createPortfolioProject(fd);
-      toast("Project created!", "success");
+      toast(t("project_created"), "success");
       setShowForm(false);
       form.reset();
-    } catch { toast("Failed to create", "error"); }
+    } catch { toast(t("content_update_failed"), "error"); }
   };
 
   const handleUpdate = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
@@ -42,47 +76,50 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
     const fd = new FormData(e.currentTarget);
     try {
       await updatePortfolioProject(id, fd);
-      toast("Project updated!", "success");
+      toast(t("project_updated"), "success");
       setEditingId(null);
-    } catch { toast("Failed to update", "error"); }
+    } catch { toast(t("content_update_failed"), "error"); }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this project?")) return;
+    if (!confirm(t("delete_confirm"))) return;
     try {
       await deletePortfolioProject(id);
       setProjects(p => p.filter(x => x.id !== id));
-      toast("Project deleted", "info");
-    } catch { toast("Failed to delete", "error"); }
+      toast(t("project_deleted"), "info");
+    } catch { toast(t("content_update_failed"), "error"); }
   };
 
   return (
     <div className="space-y-6">
       <Button onClick={() => setShowForm(!showForm)}>
-        {showForm ? "Cancel" : "Add Project"}
+        {showForm ? t("cancel") : t("add_project")}
       </Button>
 
       {showForm && (
         <Card>
-          <h3 className="mb-4 text-lg font-semibold text-white">New Project</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">{t("new_project")}</h3>
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
-              <Input name="title_en" placeholder="Title (English)" required />
-              <Input name="title_ar" placeholder="Title (Arabic)" required />
-              <Input name="category" placeholder="Category" required />
-              <Input name="image_url" placeholder="Image URL" />
-              <Input name="sort_order" type="number" placeholder="Sort Order" defaultValue="0" />
+              <Input name="title_en" placeholder={t("title_en")} required />
+              <Input name="title_ar" placeholder={t("title_ar")} required />
+              <Input name="category" placeholder={t("category")} required />
+              <div className="space-y-1">
+                <label className="block text-xs text-gray-500">{t("upload_image")}</label>
+                <ImageUpload urlName="image_url" />
+              </div>
+              <Input name="sort_order" type="number" placeholder={t("sort_order")} defaultValue="0" />
               <label className="flex items-center gap-2 text-sm text-gray-300">
-                <input type="checkbox" name="visible" defaultChecked /> Visible
+                <input type="checkbox" name="visible" defaultChecked /> {t("visible")}
               </label>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
-              <textarea name="description_en" placeholder="Description (English)" rows={3}
+              <textarea name="description_en" placeholder={t("description_en")} rows={3}
                 className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
-              <textarea name="description_ar" placeholder="Description (Arabic)" rows={3}
+              <textarea name="description_ar" placeholder={t("description_ar")} rows={3}
                 className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
             </div>
-            <Button type="submit">Create</Button>
+            <Button type="submit">{tc("create")}</Button>
           </form>
         </Card>
       )}
@@ -96,10 +133,13 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
                   <Input name="title_en" defaultValue={p.title_en} required />
                   <Input name="title_ar" defaultValue={p.title_ar} required />
                   <Input name="category" defaultValue={p.category} required />
-                  <Input name="image_url" defaultValue={p.image_url} />
+                  <div className="space-y-1">
+                    <label className="block text-xs text-gray-500">{t("upload_image")}</label>
+                    <ImageUpload urlName="image_url" filePreview={p.image_url} />
+                  </div>
                   <Input name="sort_order" type="number" defaultValue={String(p.sort_order)} />
                   <label className="flex items-center gap-2 text-sm text-gray-300">
-                    <input type="checkbox" name="visible" defaultChecked={p.visible} /> Visible
+                    <input type="checkbox" name="visible" defaultChecked={p.visible} /> {t("visible")}
                   </label>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
@@ -109,21 +149,21 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
                     className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" size="sm">Save</Button>
-                  <Button type="button" size="sm" variant="ghost" onClick={() => setEditingId(null)}>Cancel</Button>
+                  <Button type="submit" size="sm">{tc("save")}</Button>
+                  <Button type="button" size="sm" variant="ghost" onClick={() => setEditingId(null)}>{t("cancel")}</Button>
                 </div>
               </form>
             ) : (
               <>
                 <div className="mb-2 aspect-video rounded-lg bg-gradient-to-br from-[#BF953F]/10 to-[#B38728]/10 flex items-center justify-center text-sm text-gray-500">
-                  {p.image_url ? <img src={p.image_url} alt="" className="h-full w-full rounded-lg object-cover" /> : "No image"}
+                  {p.image_url ? <img src={p.image_url} alt="" className="h-full w-full rounded-lg object-cover" /> : t("no_image")}
                 </div>
                 <h3 className="font-semibold text-white">{p.title_en}</h3>
                 <p className="text-xs text-gray-500">{p.category} — Sort: {p.sort_order}</p>
                 <p className="mt-1 text-xs text-gray-400 line-clamp-2">{p.description_en}</p>
                 <div className="mt-3 flex gap-2">
-                  <Button size="sm" variant="ghost" onClick={() => setEditingId(p.id)}>Edit</Button>
-                  <Button size="sm" variant="danger" onClick={() => handleDelete(p.id)}>Delete</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setEditingId(p.id)}>{tc("edit")}</Button>
+                  <Button size="sm" variant="danger" onClick={() => handleDelete(p.id)}>{tc("delete")}</Button>
                 </div>
               </>
             )}

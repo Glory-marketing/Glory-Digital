@@ -1,6 +1,7 @@
 import { VaultForm } from "@/components/admin/vault-form";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 export default async function VaultPage({
   params,
@@ -8,6 +9,7 @@ export default async function VaultPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin" });
   const supabase = await createServerSupabaseClient();
 
   const {
@@ -30,9 +32,9 @@ export default async function VaultPage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white">API Vault</h1>
+        <h1 className="text-2xl font-bold text-white">{t("vault_title")}</h1>
         <p className="text-sm text-gray-500">
-          Securely manage API credentials (Super Admin only)
+          {t("vault_desc")}
         </p>
       </div>
 

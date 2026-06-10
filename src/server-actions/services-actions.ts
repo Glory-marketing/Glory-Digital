@@ -27,6 +27,20 @@ export async function createService(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
 
+  let imageUrl = formData.get("image_url") as string || "";
+  const file = formData.get("image_file") as File;
+  if (file && file.size > 0) {
+    const ext = file.name.split(".").pop() || "jpg";
+    const fileName = `services/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("images")
+      .upload(fileName, file, { cacheControl: "3600", upsert: false });
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage.from("images").getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    }
+  }
+
   const data = {
     name_en: formData.get("name_en") as string,
     name_ar: formData.get("name_ar") as string,
@@ -34,7 +48,7 @@ export async function createService(formData: FormData) {
     description_ar: formData.get("description_ar") as string,
     icon: formData.get("icon") as string,
     price: formData.get("price") as string,
-    image_url: formData.get("image_url") as string,
+    image_url: imageUrl,
     sort_order: parseInt(formData.get("sort_order") as string) || 0,
     visible: formData.get("visible") === "on",
   };
@@ -53,6 +67,20 @@ export async function updateService(id: string, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
 
+  let imageUrl = formData.get("image_url") as string || "";
+  const file = formData.get("image_file") as File;
+  if (file && file.size > 0) {
+    const ext = file.name.split(".").pop() || "jpg";
+    const fileName = `services/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("images")
+      .upload(fileName, file, { cacheControl: "3600", upsert: false });
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage.from("images").getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    }
+  }
+
   const data = {
     name_en: formData.get("name_en") as string,
     name_ar: formData.get("name_ar") as string,
@@ -60,7 +88,7 @@ export async function updateService(id: string, formData: FormData) {
     description_ar: formData.get("description_ar") as string,
     icon: formData.get("icon") as string,
     price: formData.get("price") as string,
-    image_url: formData.get("image_url") as string,
+    image_url: imageUrl,
     sort_order: parseInt(formData.get("sort_order") as string) || 0,
     visible: formData.get("visible") === "on",
   };

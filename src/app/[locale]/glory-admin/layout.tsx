@@ -12,9 +12,11 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen bg-[#0B0B0B]">
       <Sidebar locale={locale} />
-      <div className="ml-64 flex-1 p-8">
-        {children}
-      </div>
+      <main className="ml-64 flex-1 overflow-auto">
+        <div className="animate-in fade-in slide-in-from-bottom-2 p-8">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

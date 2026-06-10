@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { signInWithPassword } from "@/server-actions/auth";
 import { motion } from "framer-motion";
 
@@ -10,6 +11,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const locale = params.locale || "en";
+  const t = useTranslations("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,6 @@ function LoginForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setLoading(true);
     setLoading(true);
     const result = await signInWithPassword(email, password);
     if (result?.error) {
@@ -38,14 +39,14 @@ function LoginForm() {
         className="w-full max-w-md rounded-2xl border border-white/5 bg-[#121212] p-8"
       >
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-white">Admin Login</h1>
-          <p className="mt-2 text-sm text-gray-500">Sign in with your password</p>
+          <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+          <p className="mt-2 text-sm text-gray-500">{t("subtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-300" htmlFor="email">
-              Email
+              {t("email")}
             </label>
             <input
               id="email"
@@ -60,7 +61,7 @@ function LoginForm() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-300" htmlFor="password">
-              Password
+              {t("password")}
             </label>
             <input
               id="password"
@@ -69,7 +70,7 @@ function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none focus:ring-1 focus:ring-[#BF953F]"
-              placeholder="Enter your password"
+              placeholder={t("password")}
             />
           </div>
 
@@ -80,12 +81,12 @@ function LoginForm() {
             disabled={loading}
             className="w-full rounded-lg bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] px-8 py-3 font-medium text-black transition-all hover:brightness-110 disabled:opacity-50"
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? t("signing_in") : t("signin")}
           </button>
 
           <p className="text-center text-xs text-gray-500">
             <a href={`/${locale}`} className="text-[#BF953F] hover:underline">
-              Back to home
+              {t("back_home")}
             </a>
           </p>
         </form>
@@ -95,8 +96,9 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const t = useTranslations("login");
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0B0B]"><p className="text-gray-500">Loading...</p></div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0B0B]"><p className="text-gray-500">{t("loading")}</p></div>}>
       <LoginForm />
     </Suspense>
   );

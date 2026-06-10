@@ -30,35 +30,39 @@ export async function proxy(request: NextRequest) {
       return response;
     }
 
+    // Detect current locale from pathname
+    const localeMatch = pathname.match(/^\/(en|ar)/);
+    const currentLocale = localeMatch?.[1] || "en";
+
+    // Always run intlMiddleware first so next-intl sets locale headers/cookies
+    const intlResponse = intlMiddleware(request);
+    if (intlResponse.status !== 200) return intlResponse; // redirect if needed
+
     if (isProtected) {
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
       const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-      if (!supabaseUrl || !supabaseKey) return NextResponse.redirect(new URL("/en", request.url));
-
-      let response = NextResponse.next();
+      if (!supabaseUrl || !supabaseKey) return NextResponse.redirect(new URL(`/${currentLocale}`, request.url));
 
       const supabase = createServerClient(supabaseUrl, supabaseKey, {
         cookies: {
           getAll() { return request.cookies.getAll(); },
           setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-            response = NextResponse.next({ headers: request.headers });
-            cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+            cookiesToSet.forEach(({ name, value, options }) => {
+              intlResponse.cookies.set(name, value, options);
+            });
           },
         },
       });
 
       const { data } = await supabase.auth.getUser();
       if (!data?.user) {
-        return NextResponse.redirect(new URL("/en/login", request.url));
+        return NextResponse.redirect(new URL(`/${currentLocale}/login`, request.url));
       }
 
-      return response;
+      return intlResponse;
     }
 
-    if (isLoginPage) return intlMiddleware(request);
-
-    return intlMiddleware(request);
+    return intlResponse;
   } catch {
     return NextResponse.redirect(new URL("/en/login", request.url));
   }

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { sendInvitation, revokeInvitation } from "@/server-actions/invitations";
 import { useToast } from "@/components/ui/toast";
 import { useUser } from "@/hooks/use-user";
+import { useTranslations } from "next-intl";
 
 interface Invitation {
   id: string;
@@ -32,6 +33,7 @@ export function TeamInvite({
   members: Member[];
   invitations: Invitation[];
 }) {
+  const t = useTranslations("admin");
   const { toast } = useToast();
   const { profile } = useUser();
   const [email, setEmail] = useState("");
@@ -50,13 +52,13 @@ export function TeamInvite({
       if (result?.inviteLink) {
         await navigator.clipboard.writeText(result.inviteLink);
         setInviteLink(result.inviteLink);
-        toast("تم نسخ رابط الدعوة! شاركه مع الشخص.", "success");
+        toast(t("invite_copied"), "success");
       } else {
-        toast("تم إنشاء الدعوة!", "success");
+        toast(t("invite_created"), "success");
       }
       setEmail("");
     } catch {
-      toast("فشل إنشاء الدعوة", "error");
+      toast(t("invite_failed"), "error");
     }
     setSending(false);
   };
@@ -64,9 +66,9 @@ export function TeamInvite({
   const handleRevoke = async (id: string) => {
     try {
       await revokeInvitation(id);
-      toast("Invitation revoked", "info");
+      toast(t("invite_revoked"), "info");
     } catch {
-      toast("Failed to revoke", "error");
+      toast(t("invite_revoke_failed"), "error");
     }
   };
 
@@ -74,11 +76,11 @@ export function TeamInvite({
     <div className="space-y-8">
       {canInvite && (
         <Card>
-          <h3 className="mb-4 text-lg font-semibold text-white">Invite Team Member</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">{t("invite_team")}</h3>
           <div className="flex gap-3">
             <div className="flex-1">
               <Input
-                placeholder="email@example.com"
+                placeholder={t("invite_email")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -88,19 +90,19 @@ export function TeamInvite({
               onChange={(e) => setRole(e.target.value)}
               className="rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white"
             >
-              <option value="Editor">Editor</option>
-              <option value="Admin">Admin</option>
+              <option value="Editor">{t("editor")}</option>
+              <option value="Admin">{t("admin_role")}</option>
               {profile?.role === "Super_Admin" && (
-                <option value="Super_Admin">Super Admin</option>
+                <option value="Super_Admin">{t("super_admin")}</option>
               )}
             </select>
             <Button onClick={handleInvite} disabled={sending}>
-              {sending ? "Sending..." : "Invite"}
+              {sending ? t("sending") : t("invite")}
             </Button>
           </div>
           {inviteLink && (
             <div className="mt-3 rounded-lg border border-[#BF953F]/30 bg-[#BF953F]/5 px-3 py-2">
-              <p className="text-xs text-gray-400 mb-1">Invite link (copied to clipboard):</p>
+              <p className="text-xs text-gray-400 mb-1">{t("invite_link")}</p>
               <p className="text-sm text-[#FCF6BA] break-all">{inviteLink}</p>
             </div>
           )}
@@ -108,7 +110,7 @@ export function TeamInvite({
       )}
 
       <Card>
-        <h3 className="mb-4 text-lg font-semibold text-white">Team Members</h3>
+        <h3 className="mb-4 text-lg font-semibold text-white">{t("team_members")}</h3>
         <div className="space-y-2">
           {members.map((member) => (
             <div
@@ -126,7 +128,7 @@ export function TeamInvite({
                   {member.role}
                 </Badge>
                 {!member.is_active && (
-                  <Badge variant="danger">Inactive</Badge>
+                  <Badge variant="danger">{t("inactive")}</Badge>
                 )}
               </div>
             </div>
@@ -136,7 +138,7 @@ export function TeamInvite({
 
       {invitations.length > 0 && (
         <Card>
-          <h3 className="mb-4 text-lg font-semibold text-white">Pending Invitations</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">{t("pending_invitations")}</h3>
           <div className="space-y-2">
             {invitations.map((inv) => (
               <div
@@ -149,17 +151,17 @@ export function TeamInvite({
                 </div>
                 <div className="flex items-center gap-2">
                   {inv.accepted_at ? (
-                    <Badge variant="success">Accepted</Badge>
+                    <Badge variant="success">{t("accepted")}</Badge>
                   ) : (
                     <>
-                      <Badge variant="warning">Pending</Badge>
+                      <Badge variant="warning">{t("pending")}</Badge>
                       {canInvite && (
                         <Button
                           variant="danger"
                           size="sm"
                           onClick={() => handleRevoke(inv.id)}
                         >
-                          Revoke
+                          {t("revoke")}
                         </Button>
                       )}
                     </>

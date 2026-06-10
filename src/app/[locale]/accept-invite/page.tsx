@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { acceptInvitation } from "@/server-actions/invitations";
 import { useToast } from "@/components/ui/toast";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function AcceptInvitePage() {
+  const t = useTranslations("accept_invite");
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
   const { toast } = useToast();
@@ -19,11 +22,11 @@ export default function AcceptInvitePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast("Passwords do not match", "error");
+      toast(t("password_mismatch"), "error");
       return;
     }
     if (password.length < 8) {
-      toast("Password must be at least 8 characters", "error");
+      toast(t("password_length"), "error");
       return;
     }
 
@@ -31,10 +34,10 @@ export default function AcceptInvitePage() {
     try {
       await acceptInvitation(token, password);
       setSuccess(true);
-      toast("Account created! You can now log in.", "success");
+      toast(t("account_created"), "success");
     } catch (err) {
       toast(
-        err instanceof Error ? err.message : "Failed to accept invitation",
+        err instanceof Error ? err.message : t("failed_invite"),
         "error"
       );
     }
@@ -48,12 +51,12 @@ export default function AcceptInvitePage() {
           <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-gradient-to-r from-[#BF953F]/20 to-[#FCF6BA]/20 flex items-center justify-center">
             <span className="text-3xl text-[#FCF6BA]">✦</span>
           </div>
-          <h1 className="mb-2 text-2xl font-bold text-white">Welcome to Glory!</h1>
+          <h1 className="mb-2 text-2xl font-bold text-white">{t("success_title")}</h1>
           <p className="mb-6 text-gray-400">
-            Your account has been created. You can now log in.
+            {t("success_msg")}
           </p>
-          <a href="/en/glory-admin">
-            <Button>Go to Dashboard</Button>
+          <a href={`/${locale}/glory-admin`}>
+            <Button>{t("go_dashboard")}</Button>
           </a>
         </div>
       </div>
@@ -64,8 +67,8 @@ export default function AcceptInvitePage() {
     <div className="flex min-h-screen items-center justify-center bg-[#0B0B0B]">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Accept Invitation</h1>
-          <p className="mt-2 text-gray-400">Set your password to get started</p>
+          <h1 className="text-3xl font-bold text-white">{t("title")}</h1>
+          <p className="mt-2 text-gray-400">{t("subtitle")}</p>
         </div>
 
         <form
@@ -73,23 +76,23 @@ export default function AcceptInvitePage() {
           className="space-y-5 rounded-2xl border border-white/5 bg-[#121212] p-8"
         >
           <Input
-            label="Password"
+            label={t("password")}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Min. 8 characters"
+            placeholder={t("password_min")}
             required
           />
           <Input
-            label="Confirm Password"
+            label={t("confirm_password")}
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Repeat password"
+            placeholder={t("repeat_password")}
             required
           />
           <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Creating account..." : "Accept & Create Account"}
+            {submitting ? t("creating") : t("accept_button")}
           </Button>
         </form>
       </div>

@@ -9,55 +9,14 @@ import { useToast } from "@/components/ui/toast";
 
 const WHATSAPP_NUMBER = "201123328964";
 
-const serviceTree: Record<string, { labelKey: string; options: { value: string; labelKey: string }[] }> = {
-  marketing: {
-    labelKey: "marketing",
-    options: [
-      { value: "social_media", labelKey: "marketing_social" },
-      { value: "seo", labelKey: "marketing_seo" },
-      { value: "ads", labelKey: "marketing_ads" },
-      { value: "email", labelKey: "marketing_email" },
-      { value: "content", labelKey: "marketing_content" },
-    ],
-  },
-  printing: {
-    labelKey: "printing",
-    options: [
-      { value: "cards", labelKey: "print_cards" },
-      { value: "flyers", labelKey: "print_flyers" },
-      { value: "brochures", labelKey: "print_brochures" },
-      { value: "rollups", labelKey: "print_rollups" },
-      { value: "banners", labelKey: "print_banners" },
-      { value: "catalogs", labelKey: "print_catalogs" },
-      { value: "stickers", labelKey: "print_stickers" },
-    ],
-  },
-  flyers: {
-    labelKey: "flyers",
-    options: [
-      { value: "flyers", labelKey: "flyer_flyers" },
-      { value: "brochures", labelKey: "flyer_brochures" },
-      { value: "catalogs", labelKey: "flyer_catalogs" },
-      { value: "leaflets", labelKey: "flyer_leaflets" },
-      { value: "menus", labelKey: "flyer_menus" },
-    ],
-  },
-  digital: {
-    labelKey: "digital",
-    options: [
-      { value: "web", labelKey: "digital_web" },
-      { value: "mobile", labelKey: "digital_mobile" },
-      { value: "ecommerce", labelKey: "digital_ecommerce" },
-      { value: "uiux", labelKey: "digital_uiux" },
-      { value: "branding", labelKey: "digital_branding" },
-    ],
-  },
-  full: {
-    labelKey: "full",
-    options: [
-      { value: "complete", labelKey: "full_complete" },
-    ],
-  },
+const categoryKeys = ["marketing", "printing", "flyers", "digital", "full"];
+
+const subServices: Record<string, string[]> = {
+  marketing: ["marketing_social", "marketing_seo", "marketing_ads", "marketing_email", "marketing_content"],
+  printing: ["print_cards", "print_flyers", "print_brochures", "print_rollups", "print_banners", "print_catalogs", "print_stickers"],
+  flyers: ["flyer_flyers", "flyer_brochures", "flyer_catalogs", "flyer_leaflets", "flyer_menus"],
+  digital: ["digital_web", "digital_mobile", "digital_ecommerce", "digital_uiux", "digital_branding"],
+  full: ["full_complete"],
 };
 
 export function ContactForm({
@@ -72,18 +31,10 @@ export function ContactForm({
   const [category, setCategory] = useState("");
   const { toast } = useToast();
   const t = messages.contact;
-  const isAr = locale === "ar";
+  const svc = t.services || {};
 
-  const currentTree = category ? serviceTree[category] : null;
-
-  function getLabel(path: string) {
-    const parts = path.split(".");
-    let obj = messages;
-    for (const p of parts) {
-      if (!obj || typeof obj !== "object") return path;
-      obj = obj[p];
-    }
-    return typeof obj === "string" ? obj : path;
+  function label(key: string): string {
+    return svc[key] || key;
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -94,33 +45,34 @@ export function ContactForm({
 
     try {
       await submitLead(formData).catch(() => {});
-    } catch {}
+    } catch {
+      // silent
+    }
 
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string || "";
     const cat = formData.get("category") as string;
-    const sub = formData.get("sub_service") as string || "";
+    const sub = formData.get("sub_service") as string;
     const brief = formData.get("brief") as string || "";
+    const catLabel = label(cat);
+    const subLabel = sub ? label(sub) : "";
 
-    const catLabel = cat ? getLabel(`contact.services.${cat}`) : "";
-    const subLabel = sub ? getLabel(`contact.services.${cat}_${sub}`) : "";
+    const lines = [
+      `*New Lead - Glory For Marketing*`,
+      `*Name:* ${name}`,
+      `*Email:* ${email}`,
+      `*Phone:* ${phone}`,
+      `*Category:* ${catLabel}`,
+      subLabel ? `*Service:* ${subLabel}` : "",
+      `*Message:* ${brief}`,
+    ].filter(Boolean).join("%0A");
 
-    const whatsappText =
-      `*New Lead - Glory For Marketing*%0A%0A` +
-      `*Name:* ${name}%0A` +
-      `*Email:* ${email}%0A` +
-      `*Phone:* ${phone}%0A%0A` +
-      `*Category:* ${catLabel}%0A` +
-      `*Service:* ${subLabel}%0A%0A` +
-      `*Message:* ${brief || "—"}`;
-
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappText}`, "_blank");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${lines}`, "_blank");
 
     setSuccess(true);
-    toast(isAr ? "تم إرسال الرسالة بنجاح!" : "Message sent successfully!", "success");
+    toast(t.success || (locale === "ar" ? "تم إرسال الرسالة بنجاح!" : "Message sent successfully!"), "success");
     form.reset();
-    setCategory("");
     setSubmitting(false);
   }
 
@@ -134,7 +86,7 @@ export function ContactForm({
         <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-gradient-to-r from-[#BF953F]/20 to-[#FCF6BA]/20 flex items-center justify-center">
           <span className="text-3xl text-[#FCF6BA]">✦</span>
         </div>
-        <h3 className="mb-2 text-xl font-semibold text-white">{isAr ? "شكراً لك!" : "Thank You!"}</h3>
+        <h3 className="mb-2 text-xl font-semibold text-white">{t.thank_you || (locale === "ar" ? "شكراً لك!" : "Thank You!")}</h3>
         <p className="text-gray-400">{t.success}</p>
       </motion.div>
     );
@@ -160,42 +112,42 @@ export function ContactForm({
           className="mx-auto max-w-lg space-y-5 rounded-2xl border border-white/5 bg-[#121212]/80 p-8 backdrop-blur-xl"
         >
           <Input id="name" name="name" label={t.name} placeholder="John Doe" required />
-
           <Input id="email" name="email" type="email" label={t.email} placeholder="john@example.com" required />
+          <Input id="phone" name="phone" type="tel" label={t.phone || (locale === "ar" ? "رقم الهاتف" : "Phone")} placeholder="+20 100 000 0000" />
 
-          <Input id="phone" name="phone" type="tel" label={isAr ? "رقم الهاتف" : "Phone"} placeholder="+20 100 000 0000" />
-
-          {/* Category dropdown */}
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-300">Category</label>
+            <label className="block text-sm font-medium text-gray-300" htmlFor="category">
+              {t.main_category || (locale === "ar" ? "القسم الرئيسي" : "Main Category")}
+            </label>
             <select
+              id="category"
               name="category"
               required
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => { setCategory(e.target.value); }}
               className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white focus:border-[#BF953F] focus:outline-none focus:ring-1 focus:ring-[#BF953F]"
             >
-              <option value="">{isAr ? "اختر التصنيف" : "Select category"}</option>
-              {Object.keys(serviceTree).map((key) => (
-                <option key={key} value={key}>{getLabel(`contact.services.${key}`)}</option>
+              <option value="">{t.select_category || (locale === "ar" ? "-- اختر القسم --" : "-- Select Category --")}</option>
+              {categoryKeys.map((k) => (
+                <option key={k} value={k}>{svc[k] || k}</option>
               ))}
             </select>
           </div>
 
-          {/* Sub-service dropdown */}
-          {currentTree && (
+          {category && subServices[category] && (
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-300">{isAr ? "الخدمة" : "Service"}</label>
+              <label className="block text-sm font-medium text-gray-300" htmlFor="sub_service">
+                {t.required_service || (locale === "ar" ? "الخدمة المطلوبة" : "Required Service")}
+              </label>
               <select
+                id="sub_service"
                 name="sub_service"
                 required
                 className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white focus:border-[#BF953F] focus:outline-none focus:ring-1 focus:ring-[#BF953F]"
               >
-                <option value="">{isAr ? "اختر الخدمة" : "Select service"}</option>
-                {currentTree.options.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {getLabel(`contact.services.${opt.labelKey}`)}
-                  </option>
+                <option value="">{t.select_service || (locale === "ar" ? "-- اختر الخدمة --" : "-- Select Service --")}</option>
+                {subServices[category].map((s) => (
+                  <option key={s} value={s}>{svc[s] || s}</option>
                 ))}
               </select>
             </div>
@@ -204,16 +156,14 @@ export function ContactForm({
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-300" htmlFor="brief">{t.brief}</label>
             <textarea
-              id="brief"
-              name="brief"
-              rows={4}
+              id="brief" name="brief" rows={4}
               className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none focus:ring-1 focus:ring-[#BF953F]"
-              placeholder={isAr ? "حدثنا عن مشروعك..." : "Tell us about your project..."}
+              placeholder="Tell us about your project..."
             />
           </div>
 
           <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Sending..." : t.submit}
+            {submitting ? (t.sending || "Sending...") : t.submit}
           </Button>
         </motion.form>
       </div>

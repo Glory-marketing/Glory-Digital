@@ -1,8 +1,15 @@
 import { AnalyticsCharts } from "@/components/admin/analytics-charts";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { AnalyticsData } from "@/types";
+import { getTranslations } from "next-intl/server";
 
-export default async function AnalyticsPage() {
+export default async function AnalyticsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin" });
   const supabase = await createServerSupabaseClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const db = supabase.from("leads") as any;
@@ -70,8 +77,8 @@ export default async function AnalyticsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white">Analytics</h1>
-        <p className="text-sm text-gray-500">Track performance metrics</p>
+        <h1 className="text-2xl font-bold text-white">{t("analytics_title")}</h1>
+        <p className="text-sm text-gray-500">{t("analytics_desc")}</p>
       </div>
 
       <AnalyticsCharts data={analyticsData} />

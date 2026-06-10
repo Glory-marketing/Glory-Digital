@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 import {
   LineChart,
   Line,
@@ -30,27 +31,28 @@ interface AnalyticsData {
 }
 
 export function AnalyticsCharts({ data }: { data: AnalyticsData }) {
+  const t = useTranslations("admin");
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
-          <p className="text-sm text-gray-400">Total Leads</p>
+          <p className="text-sm text-gray-400">{t("total_leads")}</p>
           <p className="mt-1 text-2xl font-bold text-white">{data.totalLeads}</p>
         </Card>
         <Card>
-          <p className="text-sm text-gray-400">Conversion Rate</p>
+          <p className="text-sm text-gray-400">{t("conversion_rate")}</p>
           <p className="mt-1 text-2xl font-bold text-white">
             {data.conversionRate}%
           </p>
         </Card>
         <Card>
-          <p className="text-sm text-gray-400">Chatbot Conversations</p>
+          <p className="text-sm text-gray-400">{t("chatbot_conversations")}</p>
           <p className="mt-1 text-2xl font-bold text-white">
             {data.chatbotConversations}
           </p>
         </Card>
         <Card>
-          <p className="text-sm text-gray-400">Analyzer Scans</p>
+          <p className="text-sm text-gray-400">{t("analyzer_scans")}</p>
           <p className="mt-1 text-2xl font-bold text-white">
             {data.analyzerScans}
           </p>
@@ -59,7 +61,7 @@ export function AnalyticsCharts({ data }: { data: AnalyticsData }) {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
-          <h3 className="mb-4 text-lg font-semibold text-white">Leads Over Time</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">{t("leads_over_time")}</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.leadsByDay}>
@@ -87,7 +89,7 @@ export function AnalyticsCharts({ data }: { data: AnalyticsData }) {
         </Card>
 
         <Card>
-          <h3 className="mb-4 text-lg font-semibold text-white">Leads by Service</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">{t("leads_by_service")}</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -114,7 +116,7 @@ export function AnalyticsCharts({ data }: { data: AnalyticsData }) {
         </Card>
 
         <Card className="md:col-span-2">
-          <h3 className="mb-4 text-lg font-semibold text-white">Leads by Source</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">{t("leads_by_source")}</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.leadsBySource}>

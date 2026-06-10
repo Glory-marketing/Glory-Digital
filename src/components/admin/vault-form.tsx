@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { storeCredential, deleteCredential } from "@/server-actions/vault";
 import { useToast } from "@/components/ui/toast";
+import { useTranslations } from "next-intl";
 
 export function VaultForm() {
+  const t = useTranslations("admin");
   const { toast } = useToast();
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
 
@@ -22,45 +24,45 @@ export function VaultForm() {
         formData.get("value") as string,
         formData.get("provider") as string
       );
-      toast("Credential stored securely!", "success");
+      toast(t("credential_stored"), "success");
       form.reset();
     } catch {
-      toast("Failed to store credential", "error");
+      toast(t("credential_store_failed"), "error");
     }
   };
 
   const handleDelete = async (name: string) => {
     try {
       await deleteCredential(name);
-      toast("Credential deleted", "info");
+      toast(t("credential_deleted"), "info");
     } catch {
-      toast("Failed to delete", "error");
+      toast(t("credential_delete_failed"), "error");
     }
   };
 
   return (
     <div className="space-y-8">
       <Card>
-        <h3 className="mb-4 text-lg font-semibold text-white">Add Credential</h3>
+        <h3 className="mb-4 text-lg font-semibold text-white">{t("add_credential")}</h3>
         <form onSubmit={handleAdd} className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">
-            <Input name="name" label="Name" placeholder="OPENAI_API_KEY" required />
-            <Input name="provider" label="Provider" placeholder="OpenAI" required />
+            <Input name="name" label={t("credential_name")} placeholder="OPENAI_API_KEY" required />
+            <Input name="provider" label={t("credential_provider")} placeholder="OpenAI" required />
             <Input
               name="value"
-              label="Value"
+              label={t("credential_value")}
               type="password"
               placeholder="sk-..."
               required
             />
           </div>
-          <Button type="submit">Store Encrypted</Button>
+          <Button type="submit">{t("store_encrypted")}</Button>
         </form>
       </Card>
 
       <Card>
-        <h3 className="mb-4 text-lg font-semibold text-white">Existing Credentials</h3>
-        <p className="text-sm text-gray-500">Credentials are masked by default. Only Super Admins can view.</p>
+        <h3 className="mb-4 text-lg font-semibold text-white">{t("existing_credentials")}</h3>
+        <p className="text-sm text-gray-500">{t("credentials_masked")}</p>
       </Card>
     </div>
   );

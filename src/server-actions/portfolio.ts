@@ -26,13 +26,27 @@ export async function createPortfolioProject(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
 
+  let imageUrl = formData.get("image_url") as string || "";
+  const file = formData.get("image_file") as File;
+  if (file && file.size > 0) {
+    const ext = file.name.split(".").pop() || "jpg";
+    const fileName = `portfolio/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("images")
+      .upload(fileName, file, { cacheControl: "3600", upsert: false });
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage.from("images").getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    }
+  }
+
   const data = {
     title_en: formData.get("title_en") as string,
     title_ar: formData.get("title_ar") as string,
     category: formData.get("category") as string,
     description_en: formData.get("description_en") as string,
     description_ar: formData.get("description_ar") as string,
-    image_url: formData.get("image_url") as string,
+    image_url: imageUrl,
     sort_order: parseInt(formData.get("sort_order") as string) || 0,
     visible: formData.get("visible") === "on",
   };
@@ -51,13 +65,27 @@ export async function updatePortfolioProject(id: string, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
 
+  let imageUrl = formData.get("image_url") as string || "";
+  const file = formData.get("image_file") as File;
+  if (file && file.size > 0) {
+    const ext = file.name.split(".").pop() || "jpg";
+    const fileName = `portfolio/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("images")
+      .upload(fileName, file, { cacheControl: "3600", upsert: false });
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage.from("images").getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    }
+  }
+
   const data = {
     title_en: formData.get("title_en") as string,
     title_ar: formData.get("title_ar") as string,
     category: formData.get("category") as string,
     description_en: formData.get("description_en") as string,
     description_ar: formData.get("description_ar") as string,
-    image_url: formData.get("image_url") as string,
+    image_url: imageUrl,
     sort_order: parseInt(formData.get("sort_order") as string) || 0,
     visible: formData.get("visible") === "on",
   };

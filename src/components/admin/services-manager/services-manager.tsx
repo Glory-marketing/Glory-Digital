@@ -1,11 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { createService, updateService, deleteService } from "@/server-actions/services-actions";
+import { useTranslations } from "next-intl";
+
+function ImageUpload({ urlName, filePreview }: { urlName: string; filePreview?: string }) {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) setPreview(URL.createObjectURL(f));
+  };
+
+  const displayUrl = preview || filePreview;
+
+  return (
+    <div className="space-y-2">
+      <input name="image_file" type="file" accept="image/*" onChange={handleFileChange}
+        className="file:mr-3 file:rounded-lg file:border-0 file:bg-[#BF953F]/10 file:px-3 file:py-1.5 file:text-xs file:text-[#FCF6BA] text-xs text-gray-400" />
+      <input name={urlName} type="hidden" />
+      {displayUrl && (
+        <div className="relative aspect-video rounded-lg overflow-hidden bg-black/30">
+          <img src={displayUrl} alt="" className="h-full w-full object-cover" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface ServiceItem {
   id: string;
@@ -21,6 +46,8 @@ interface ServiceItem {
 }
 
 export function ServicesManager({ services: initial }: { services: ServiceItem[] }) {
+  const t = useTranslations("admin");
+  const tc = useTranslations("common");
   const [services, setServices] = useState(initial);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -31,9 +58,9 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
     const fd = new FormData(e.currentTarget);
     try {
       await createService(fd);
-      toast("Service created!", "success");
+      toast(t("service_created"), "success");
       setShowForm(false);
-    } catch { toast("Failed to create", "error"); }
+    } catch { toast(tc("error"), "error"); }
   };
 
   const handleUpdate = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
@@ -41,18 +68,18 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
     const fd = new FormData(e.currentTarget);
     try {
       await updateService(id, fd);
-      toast("Service updated!", "success");
+      toast(t("service_updated"), "success");
       setEditingId(null);
-    } catch { toast("Failed to update", "error"); }
+    } catch { toast(tc("error"), "error"); }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this service?")) return;
+    if (!confirm(t("delete_confirm"))) return;
     try {
       await deleteService(id);
       setServices(s => s.filter(x => x.id !== id));
-      toast("Service deleted", "info");
-    } catch { toast("Failed to delete", "error"); }
+      toast(t("service_deleted"), "info");
+    } catch { toast(tc("error"), "error"); }
   };
 
   const aiEnhance = async (field: string, value: string) => {
@@ -73,40 +100,43 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
   return (
     <div className="space-y-6">
       <Button onClick={() => setShowForm(!showForm)}>
-        {showForm ? "Cancel" : "Add Service"}
+        {showForm ? t("cancel") : t("add_service")}
       </Button>
 
       {showForm && (
         <Card>
-          <h3 className="mb-4 text-lg font-semibold text-white">New Service</h3>
+          <h3 className="mb-4 text-lg font-semibold text-white">{t("new_service")}</h3>
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
-              <Input name="name_en" placeholder="Name (English)" required />
-              <Input name="name_ar" placeholder="Name (Arabic)" required />
-              <Input name="icon" placeholder="Icon name (e.g. star, print)" />
-              <Input name="price" placeholder="Price (optional)" />
-              <Input name="image_url" placeholder="Image URL" />
-              <Input name="sort_order" type="number" placeholder="Sort Order" defaultValue="0" />
+              <Input name="name_en" placeholder={t("service_name_en")} required />
+              <Input name="name_ar" placeholder={t("service_name_ar")} required />
+              <Input name="icon" placeholder={t("icon")} />
+              <Input name="price" placeholder={t("price")} />
+              <div className="space-y-1">
+                <label className="block text-xs text-gray-500">{t("upload_image")}</label>
+                <ImageUpload urlName="image_url" />
+              </div>
+              <Input name="sort_order" type="number" placeholder={t("sort_order")} defaultValue="0" />
               <label className="flex items-center gap-2 text-sm text-gray-300">
-                <input type="checkbox" name="visible" defaultChecked /> Visible
+                <input type="checkbox" name="visible" defaultChecked /> {t("visible")}
               </label>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <textarea name="description_en" placeholder="Description (English)" rows={3}
+                <textarea name="description_en" placeholder={t("service_desc_en")} rows={3}
                   className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
                 <Button type="button" size="sm" variant="ghost" className="text-xs mt-1"
                   onClick={async (e) => {
                     const ta = (e.target as HTMLElement).closest('div')?.previousElementSibling as HTMLTextAreaElement;
                     if (ta) ta.value = await aiEnhance("service description", ta.value || "professional marketing service");
                   }}>
-                  ✨ AI Enhance
+                  ✨ {t("ai_enhance")}
                 </Button>
               </div>
-              <textarea name="description_ar" placeholder="Description (Arabic)" rows={3}
+              <textarea name="description_ar" placeholder={t("service_desc_ar")} rows={3}
                 className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
             </div>
-            <Button type="submit">Create</Button>
+            <Button type="submit">{tc("create")}</Button>
           </form>
         </Card>
       )}
@@ -121,10 +151,13 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
                   <Input name="name_ar" defaultValue={s.name_ar} required />
                   <Input name="icon" defaultValue={s.icon} />
                   <Input name="price" defaultValue={s.price} />
-                  <Input name="image_url" defaultValue={s.image_url} />
+                  <div className="space-y-1">
+                    <label className="block text-xs text-gray-500">{t("upload_image")}</label>
+                    <ImageUpload urlName="image_url" filePreview={s.image_url} />
+                  </div>
                   <Input name="sort_order" type="number" defaultValue={String(s.sort_order)} />
                   <label className="flex items-center gap-2 text-sm text-gray-300">
-                    <input type="checkbox" name="visible" defaultChecked={s.visible} /> Visible
+                    <input type="checkbox" name="visible" defaultChecked={s.visible} /> {t("visible")}
                   </label>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
@@ -134,8 +167,8 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
                     className="w-full rounded-lg border border-white/10 bg-black/50 px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-[#BF953F] focus:outline-none" />
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" size="sm">Save</Button>
-                  <Button type="button" size="sm" variant="ghost" onClick={() => setEditingId(null)}>Cancel</Button>
+                  <Button type="submit" size="sm">{tc("save")}</Button>
+                  <Button type="button" size="sm" variant="ghost" onClick={() => setEditingId(null)}>{t("cancel")}</Button>
                 </div>
               </form>
             ) : (
@@ -151,8 +184,8 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
                 </div>
                 <p className="text-xs text-gray-400 line-clamp-2">{s.description_en}</p>
                 <div className="mt-3 flex gap-2">
-                  <Button size="sm" variant="ghost" onClick={() => setEditingId(s.id)}>Edit</Button>
-                  <Button size="sm" variant="danger" onClick={() => handleDelete(s.id)}>Delete</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setEditingId(s.id)}>{tc("edit")}</Button>
+                  <Button size="sm" variant="danger" onClick={() => handleDelete(s.id)}>{tc("delete")}</Button>
                 </div>
               </>
             )}

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
+import { useTranslations } from "next-intl";
 
 interface AnalyzerResult {
   score: number;
@@ -16,6 +17,9 @@ interface AnalyzerResult {
 }
 
 export function AITools({ visible }: { visible: boolean }) {
+  const tAna = useTranslations("analyzer");
+  const tChat = useTranslations("chatbot");
+  const tCom = useTranslations("common");
   const [url, setUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalyzerResult | null>(null);
@@ -65,7 +69,7 @@ export function AITools({ visible }: { visible: boolean }) {
     } catch {
       setChatMessages((prev) => [
         ...prev,
-        { role: "assistant", content: chatInput.match(/[\u0600-\u06FF]/) ? "عذراً، غير متاح حالياً." : "Sorry, I'm unavailable right now." },
+        { role: "assistant", content: tChat("sorry_unavailable") },
       ]);
     }
   };
@@ -88,7 +92,7 @@ export function AITools({ visible }: { visible: boolean }) {
           <div className="mx-auto max-w-2xl">
             <div className="rounded-xl border border-white/5 bg-[#121212] p-8">
               <h3 className="mb-4 text-xl font-semibold text-white">
-                Free Website Audit
+                {tAna("title")}
               </h3>
               <p className="mb-6 text-sm text-gray-400">
                 Get a free AI-powered analysis of your website&apos;s performance,
@@ -97,13 +101,13 @@ export function AITools({ visible }: { visible: boolean }) {
               <div className="flex gap-3">
                 <div className="flex-1">
                   <Input
-                    placeholder="Enter your website URL"
+                    placeholder={tAna("placeholder")}
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                   />
                 </div>
                 <Button onClick={handleAnalyze} disabled={analyzing}>
-                  {analyzing ? "Analyzing..." : "Analyze"}
+                  {analyzing ? tAna("analyzing") : tAna("submit")}
                 </Button>
               </div>
             </div>
@@ -115,9 +119,9 @@ export function AITools({ visible }: { visible: boolean }) {
         {result && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-white">Audit Report</h3>
+              <h3 className="text-xl font-bold text-white">{tAna("audit_report")}</h3>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400">Score:</span>
+                <span className="text-sm text-gray-400">{tAna("score")}:</span>
                 <span className="text-2xl font-bold text-[#FCF6BA]">{result.score}/100</span>
               </div>
             </div>
@@ -125,10 +129,10 @@ export function AITools({ visible }: { visible: boolean }) {
             <p className="text-sm text-gray-300">{result.summary}</p>
 
             {[
-              { label: "Performance", items: result.performance },
-              { label: "UX", items: result.ux },
-              { label: "SEO", items: result.seo },
-              { label: "Design", items: result.design },
+              { label: tAna("performance"), items: result.performance },
+              { label: tAna("ux"), items: result.ux },
+              { label: tAna("seo"), items: result.seo },
+              { label: tAna("design"), items: result.design },
             ].map((section) => (
               <div key={section.label}>
                 <h4 className="mb-2 font-medium text-[#BF953F]">{section.label}</h4>
@@ -144,7 +148,7 @@ export function AITools({ visible }: { visible: boolean }) {
             ))}
 
             <div className="flex justify-end">
-              <Button onClick={() => setShowModal(false)}>Close</Button>
+              <Button onClick={() => setShowModal(false)}>{tAna("close")}</Button>
             </div>
           </div>
         )}
@@ -163,13 +167,13 @@ export function AITools({ visible }: { visible: boolean }) {
       <Modal open={chatOpen} onClose={() => setChatOpen(false)}>
         <div className="flex h-[500px] flex-col">
           <div className="mb-4 border-b border-white/10 pb-4">
-            <h3 className="text-lg font-semibold text-white">Glory AI Assistant</h3>
+            <h3 className="text-lg font-semibold text-white">{tChat("title")}</h3>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-4 px-1">
             {chatMessages.length === 0 && (
               <div className="text-center text-sm text-gray-500 pt-8">
-                Hello! I'm Glory AI. How can I help you today?
+                {tChat("greeting")}
               </div>
             )}
             {chatMessages.map((msg, i) => (
@@ -192,12 +196,12 @@ export function AITools({ visible }: { visible: boolean }) {
 
           <div className="mt-4 flex gap-2">
             <Input
-              placeholder="Ask me anything..."
+              placeholder={tChat("placeholder")}
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleChat()}
             />
-            <Button onClick={handleChat}>Send</Button>
+            <Button onClick={handleChat}>{tChat("send")}</Button>
           </div>
         </div>
       </Modal>

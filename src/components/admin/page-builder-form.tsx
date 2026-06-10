@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { updateContentTranslation, toggleSectionVisibility, revalidateAll } from "@/server-actions/content";
 import { useToast } from "@/components/ui/toast";
+import { useTranslations } from "next-intl";
 
 interface Section {
   section: string;
@@ -29,6 +30,7 @@ export function PageBuilderForm({
   visibilities: Visibility[];
   locale: string;
 }) {
+  const t = useTranslations("admin");
   const { toast } = useToast();
   const [activeLocale, setActiveLocale] = useState(locale);
 
@@ -46,24 +48,24 @@ export function PageBuilderForm({
   const handleSave = async (section: string, key: string, value: string) => {
     try {
       await updateContentTranslation(section, key, activeLocale, value);
-      toast("Content updated!", "success");
+      toast(t("content_updated"), "success");
     } catch {
-      toast("Failed to update", "error");
+      toast(t("content_update_failed"), "error");
     }
   };
 
   const handleToggle = async (section: string, current: boolean) => {
     try {
       await toggleSectionVisibility(section, activeLocale, !current);
-      toast("Visibility updated!", "success");
+      toast(t("visibility_updated"), "success");
     } catch {
-      toast("Failed to update", "error");
+      toast(t("content_update_failed"), "error");
     }
   };
 
   const handleRevalidate = async () => {
     await revalidateAll();
-    toast("Site cache cleared!", "success");
+    toast(t("cache_cleared"), "success");
   };
 
   return (
@@ -77,12 +79,12 @@ export function PageBuilderForm({
               size="sm"
               onClick={() => setActiveLocale(l)}
             >
-              {l === "en" ? "English" : "العربية"}
+              {t(l === "en" ? "en" : "ar")}
             </Button>
           ))}
         </div>
         <Button variant="secondary" size="sm" onClick={handleRevalidate}>
-          Publish Changes
+          {t("publish_changes")}
         </Button>
       </div>
 
@@ -104,7 +106,7 @@ export function PageBuilderForm({
                   onChange={() => handleToggle(section, visible?.is_visible ?? true)}
                   className="accent-[#BF953F]"
                 />
-                Visible
+                {t("visible")}
               </label>
             </div>
             <div className="space-y-4">

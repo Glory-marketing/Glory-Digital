@@ -1,5 +1,6 @@
 import { PageBuilderForm } from "@/components/admin/page-builder-form";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 
 export default async function PageBuilderPage({
   params,
@@ -7,6 +8,7 @@ export default async function PageBuilderPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin" });
   const supabase = await createServerSupabaseClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ctDb = supabase.from("content_translations") as any;
@@ -19,8 +21,8 @@ export default async function PageBuilderPage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white">Page Builder</h1>
-        <p className="text-sm text-gray-500">Edit landing page content visually</p>
+        <h1 className="text-2xl font-bold text-white">{t("page_builder_title")}</h1>
+        <p className="text-sm text-gray-500">{t("page_builder_desc")}</p>
       </div>
 
       <PageBuilderForm
