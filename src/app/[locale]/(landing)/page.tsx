@@ -15,7 +15,6 @@ export default function LandingPage() {
   const params = useParams<{ locale: string }>();
   const locale = params.locale || "en";
 
-  const t = useTranslations();
   const messages = useMessages();
 
   return (
@@ -24,11 +23,7 @@ export default function LandingPage() {
       {!loading && (
         <>
           <Hero locale={locale} />
-          <About
-            title={t("about.title")}
-            content={t("about.content")}
-            visible={true}
-          />
+          <About visible={true} />
           <Testimonials visible={true} />
           <AITools visible={true} />
           <ContactForm locale={locale} messages={messages} />

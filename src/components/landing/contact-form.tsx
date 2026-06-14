@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { submitLead } from "@/server-actions/leads";
 import { useToast } from "@/components/ui/toast";
 
-const WHATSAPP_NUMBER = "201123328964";
+const WHATSAPP_MARKETING = "20115191604";
+const WHATSAPP_PRINTING = "201123328964";
 
 const categoryKeys = ["marketing", "printing", "flyers", "digital", "full"];
 
@@ -60,6 +61,9 @@ export function ContactForm({
     const catLabel = label(cat);
     const subLabel = sub ? label(sub) : "";
 
+    const printingCats = ["printing", "flyers"];
+    const waNumber = printingCats.includes(cat) ? WHATSAPP_PRINTING : WHATSAPP_MARKETING;
+
     const lines = [
       `*New Lead - Glory For Marketing*`,
       `*Name:* ${name}`,
@@ -70,10 +74,10 @@ export function ContactForm({
       `*Message:* ${brief}`,
     ].filter(Boolean).join("%0A");
 
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${lines}`, "_blank");
+    window.open(`https://wa.me/${waNumber}?text=${lines}`, "_blank");
 
     setSuccess(true);
-    toast(t.success || (locale === "ar" ? "تم إرسال الرسالة بنجاح!" : "Message sent successfully!"), "success");
+    toast(t.success || (locale === "ar" ? "تم تحويلك للواتساب!" : "Redirecting to WhatsApp..."), "success");
     form.reset();
     setSubmitting(false);
   }
