@@ -6,18 +6,19 @@ import { SupabaseProvider } from "@/providers/supabase-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { CustomCursor } from "@/components/landing/cursor";
+import { Particles } from "@/components/landing/particles";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Glory For Marketing",
-  description: "Premium marketing, design & development for brands that demand excellence",
+  title: "Glory Agency (Advertising & Marketing)",
+  description: "Premium advertising, marketing, design & development for brands that demand excellence",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
   openGraph: {
-    title: "Glory For Marketing",
-    description: "Premium marketing, design & development for brands that demand excellence",
+    title: "Glory Agency (Advertising & Marketing)",
+    description: "Premium advertising, marketing, design & development for brands that demand excellence",
     images: [{
       url: "https://glory-digital.vercel.app/og-image.png",
       width: 1200,
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
             <SupabaseProvider>
               <ToastProvider>
                 <CustomCursor />
+                <Particles />
                 {children}
               </ToastProvider>
             </SupabaseProvider>

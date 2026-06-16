@@ -69,8 +69,9 @@ export function Portfolio({ visible }: { visible: boolean }) {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group relative overflow-hidden rounded-xl border border-white/5 bg-[#121212] hover:border-[#BF953F]/30 hover:shadow-lg hover:shadow-[#BF953F]/5 transition-all"
+              className="group relative overflow-hidden rounded-xl border border-white/5 bg-[#121212] hover:border-[#BF953F]/30 hover:shadow-lg hover:shadow-[#BF953F]/5 transition-all duration-500"
             >
+              <div className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-b from-[#BF953F]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <div className="aspect-video bg-gradient-to-br from-[#BF953F]/10 to-[#B38728]/10 flex items-center justify-center relative overflow-hidden">
                 {project.image_url ? (
                   <img src={project.image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />

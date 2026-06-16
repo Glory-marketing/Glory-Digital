@@ -155,12 +155,13 @@ export function ServicesPodium() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="rounded-xl border border-white/5 bg-[#121212] p-6 text-center hover:border-[#BF953F]/30 transition-all hover:shadow-lg hover:shadow-[#BF953F]/5"
+              className="group relative rounded-xl border border-white/5 bg-[#121212] p-6 text-center transition-all duration-500 hover:border-[#BF953F]/30 hover:shadow-lg hover:shadow-[#BF953F]/5"
             >
-              <div className="mx-auto mb-4 h-12 w-12 rounded-lg bg-gradient-to-br from-[#BF953F]/20 to-[#B38728]/20 flex items-center justify-center text-xl">
+              <div className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-b from-[#BF953F]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="mx-auto mb-4 h-12 w-12 rounded-lg bg-gradient-to-br from-[#BF953F]/20 to-[#B38728]/20 flex items-center justify-center text-xl group-hover:scale-110 transition-transform duration-300">
                 {iconMap[s.icon] || "✦"}
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-white">{getName(s)}</h3>
+              <h3 className="mb-2 text-lg font-semibold text-white group-hover:text-[#FCF6BA] transition-colors duration-300">{getName(s)}</h3>
               <p className="text-sm text-gray-400">{getDesc(s)}</p>
               {s.price && (
                 <p className="mt-2 text-sm font-medium text-[#FCF6BA]">{s.price}</p>

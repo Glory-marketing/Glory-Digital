@@ -9,7 +9,7 @@
     "quick_links": "Quick Links",
     "contact_us": "Contact Us",
     "phone": "Phone",
-    "footer_desc": "Glory For Marketing - Your complete partner in advertising, printing materials, flyers, and digital marketing. We build glory for your brand.",
+    "footer_desc": "Glory Agency (Advertising & Marketing) — Your complete partner in advertising, printing materials, flyers, and digital marketing. We build glory for your brand.",
     "all_rights": "All rights reserved.",
     "wa_marketing": "WhatsApp Marketing",
     "wa_printing": "WhatsApp Printing",
@@ -17,8 +17,8 @@
   },
   "hero": {
     "headline_prefix": "We Build Digital",
-    "headline_highlight": "Glory",
-    "subheadline": "Premium marketing, design & development for brands that demand excellence",
+    "headline_highlight": "Glory Agency",
+    "subheadline": "Premium advertising, marketing, design & development for brands that demand excellence",
     "cta": "Start Your Journey",
     "secondary": "View Our Work"
   },
@@ -37,10 +37,10 @@
     "podium_coding": "Development"
   },
   "about": {
-    "title": "About Glory",
+    "title": "About Glory Agency",
     "content": "We are a team of passionate creators, strategists, and engineers dedicated to building digital experiences that leave a lasting impression.",
     "page_title": "About Us",
-    "page_desc": "Meet the team behind Glory"
+    "page_desc": "Meet the team behind Glory Agency"
   },
   "portfolio": {
     "title": "Our Work",
@@ -140,7 +140,7 @@
     "repeat_password": "Repeat password",
     "accept_button": "Accept & Create Account",
     "creating": "Creating account...",
-    "success_title": "Welcome to Glory!",
+    "success_title": "Welcome to Glory Agency!",
     "success_msg": "Your account has been created. You can now log in.",
     "go_dashboard": "Go to Dashboard",
     "password_mismatch": "Passwords do not match",
@@ -159,7 +159,7 @@
     "analytics": "Analytics",
     "team": "Team",
     "logout": "Logout",
-    "welcome": "Welcome to Glory Admin",
+    "welcome": "Welcome to Glory Agency Admin",
     "welcome_desc": "Manage your marketing empire from one place.",
     "portfolio_title": "Portfolio Projects",
     "portfolio_desc": "Manage your portfolio projects",

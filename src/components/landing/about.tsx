@@ -5,26 +5,26 @@ import { motion, useInView } from "framer-motion";
 import { useLocale } from "next-intl";
 
 const milestones = [
-  { year: "2002", en: "The Beginning", ar: "البداية", enDesc: "A small printing shop with a big dream — that's where Glory was born in the heart of the city.", arDesc: "مطبعة صغيرة بحلم كبير — هكذا ولدت جلوري في قلب المدينة." },
+  { year: "2002", en: "The Beginning", ar: "البداية", enDesc: "A small printing shop with a big dream — that's where Glory Agency was born in the heart of the city.", arDesc: "مطبعة صغيرة بحلم كبير — هكذا ولدت جلوري إيجنسي في قلب المدينة." },
   { year: "2008", en: "The Expansion", ar: "التوسع", enDesc: "From printing to branding. We added design services and grew our team of creatives.", arDesc: "من الطباعة إلى بناء العلامات التجارية. أضفنا خدمات التصميم ووسعنا فريق المبدعين." },
-  { year: "2015", en: "Digital Transformation", ar: "التحول الرقمي", enDesc: "The digital wave hit and we rode it. Websites, social media, digital marketing — we mastered it all.", arDesc: "جاءت الموجة الرقمية وركبناها. المواقع، السوشيال ميديا، التسويق الإلكتروني — أتقناها جميعاً." },
-  { year: "2020", en: "The Pivot", ar: "التحول", enDesc: "When the world changed, we evolved. Remote work, AI tools, and a new vision for the future of marketing.", arDesc: "عندما تغير العالم، تطورنا. العمل عن بعد، أدوات الذكاء الاصطناعي، ورؤية جديدة لمستقبل التسويق." },
-  { year: "2024+", en: "Glory Digital", ar: "جلوري ديجيتال", enDesc: "Today we're a full-service marketing powerhouse — blending creativity, technology, and strategy to build digital glory.", arDesc: "اليوم نحن قوة تسويقية متكاملة — نمزج بين الإبداع، التكنولوجيا، والاستراتيجية لنبني المجد الرقمي." },
+  { year: "2015", en: "Digital Transformation", ar: "التحول الرقمي", enDesc: "The digital wave hit and we rode it. Websites, social media, digital advertising — we mastered it all.", arDesc: "جاءت الموجة الرقمية وركبناها. المواقع، السوشيال ميديا، الإعلانات الرقمية — أتقناها جميعاً." },
+  { year: "2020", en: "The Pivot", ar: "التحول", enDesc: "When the world changed, we evolved. Remote work, AI tools, and a new vision for the future of advertising and marketing.", arDesc: "عندما تغير العالم، تطورنا. العمل عن بعد، أدوات الذكاء الاصطناعي، ورؤية جديدة لمستقبل الدعاية والإعلان والتسويق." },
+  { year: "2024+", en: "Glory Agency", ar: "جلوري إيجنسي", enDesc: "Today we're a full-service advertising & marketing powerhouse — blending creativity, technology, and strategy to build your glory.", arDesc: "اليوم نحن وكالة دعاية وإعلان وتسويق متكاملة — نمزج بين الإبداع، التكنولوجيا، والاستراتيجية لنبني مجدك." },
 ];
 
 const storyParagraphs = {
   en: [
     "It started with a single printing machine in a small workshop back in 2002. A man with a vision — to bring quality, creativity, and trust to every piece of paper that left his shop.",
     "Word spread fast. Soon, local businesses weren't just asking for prints — they wanted design, identity, a story. So we grew. We learned. We hired artists, thinkers, and dreamers.",
-    "By 2015, the world had gone digital, and so had we. Websites, apps, social media campaigns — Glory became the bridge between traditional craftsmanship and modern technology.",
-    "Today, we are Glory Digital. A full-house creative agency that handles everything from a business card to a full brand ecosystem. We don't just make things look good — we make them work.",
+    "By 2015, the world had gone digital, and so had we. Websites, apps, social media campaigns — Glory Agency became the bridge between traditional craftsmanship and modern technology.",
+    "Today, we are Glory Agency. A full-house creative agency that handles everything from a business card to a full brand ecosystem. We don't just make things look good — we make them work.",
     "This is our story. And if you're reading this, maybe it's time to write yours with us.",
   ],
   ar: [
     "بدأت القصة بآلة طباعة واحدة في ورشة صغيرة عام 2002. رجل برؤية — لتقديم الجودة، الإبداع، والثقة في كل ورقة تخرج من مطبعته.",
     "انتشر الخبر بسرعة. سرعان ما لم يطلب منه العملاء المحليون الطباعة فقط — بل أرادوا تصميماً، هوية، قصة. فكبرنا. تعلمنا. وظفنا فنانين، مفكرين، وحالمين.",
-    "بحلول 2015، أصبح العالم رقمياً، وكذلك نحن. مواقع، تطبيقات، حملات سوشيال ميديا — أصبحت جلوري الجسر بين الحرفية التقليدية والتكنولوجيا الحديثة.",
-    "اليوم، نحن جلوري ديجيتال. وكالة إبداعية متكاملة تتعامل مع كل شيء من بطاقة العمل إلى نظام العلامة التجارية الكامل. لا نجعل الأشياء تبدو جميلة فحسب — بل نجعلها تعمل.",
+    "بحلول 2015، أصبح العالم رقمياً، وكذلك نحن. مواقع، تطبيقات، حملات سوشيال ميديا — أصبحت جلوري إيجنسي الجسر بين الحرفية التقليدية والتكنولوجيا الحديثة.",
+    "اليوم، نحن جلوري إيجنسي. وكالة إبداعية متكاملة تتعامل مع كل شيء من بطاقة العمل إلى نظام العلامة التجارية الكامل. لا نجعل الأشياء تبدو جميلة فحسب — بل نجعلها تعمل.",
     "هذه قصتنا. وإن كنت تقرأ هذا، ربما حان الوقت لتكتب قصتك معنا.",
   ],
 };

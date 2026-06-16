@@ -29,7 +29,7 @@ export default function LandingLayout({
           <Link href={`/${locale}`} className="flex items-center">
             <Image
               src="/logo.png"
-              alt="Glory"
+              alt="Glory Agency"
               width={100}
               height={32}
               className="h-8 w-auto"
@@ -179,7 +179,7 @@ export default function LandingLayout({
             <div className="md:col-span-2">
               <Image
                 src="/logo.png"
-                alt="Glory"
+                alt="Glory Agency"
                 width={120}
                 height={38}
                 className="mb-4 h-10 w-auto"
@@ -220,7 +220,7 @@ export default function LandingLayout({
           </div>
           <div className="mt-12 border-t border-white/5 pt-8 text-center">
             <p className="text-sm text-gray-600">
-              &copy; {new Date().getFullYear()} Glory For Marketing. {t("all_rights")}
+              &copy; {new Date().getFullYear()} Glory Agency (Advertising & Marketing). {t("all_rights")}
             </p>
           </div>
         </div>

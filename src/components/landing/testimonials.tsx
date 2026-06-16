@@ -7,17 +7,17 @@ const testimonials = [
   {
     name: "Sarah Al-Rashid",
     role: "CEO, LuxCorp",
-    content: "Glory transformed our digital presence completely. The results exceeded our expectations.",
+    content: "Glory Agency transformed our digital presence completely. The results exceeded our expectations.",
   },
   {
     name: "Ahmed Hassan",
     role: "Founder, TechVentures",
-    content: "Working with Glory was a game-changer. Their attention to detail is unmatched.",
+    content: "Working with Glory Agency was a game-changer. Their attention to detail is unmatched.",
   },
   {
     name: "Layla Mohammed",
     role: "Marketing Director, Prestige Brands",
-    content: "The team at Glory delivered a masterpiece. Our engagement rates have never been higher.",
+    content: "The team at Glory Agency delivered a masterpiece. Our engagement rates have never been higher.",
   },
 ];
 

@@ -65,7 +65,7 @@ export function ContactForm({
     const waNumber = printingCats.includes(cat) ? WHATSAPP_PRINTING : WHATSAPP_MARKETING;
 
     const lines = [
-      `*New Lead - Glory For Marketing*`,
+      `*New Lead - Glory Agency*`,
       `*Name:* ${name}`,
       `*Email:* ${email}`,
       `*Phone:* ${phone}`,

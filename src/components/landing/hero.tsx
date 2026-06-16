@@ -165,17 +165,33 @@ export function Hero({ locale }: HeroProps) {
           <a
             href={`/${locale}/contact`}
             data-interactive
-            className="rounded-lg bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] px-8 py-3 font-medium text-black transition-all hover:brightness-110"
+            className="group relative rounded-lg bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] px-8 py-3 font-medium text-black transition-all hover:brightness-110"
           >
-            {t("cta")}
+            <span className="relative z-10">{t("cta")}</span>
+            <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] opacity-0 blur-xl transition-opacity group-hover:opacity-60" />
           </a>
           <a
             href={`/${locale}/portfolio`}
             data-interactive
-            className="rounded-lg border border-[#BF953F]/30 px-8 py-3 font-medium text-[#FCF6BA] transition-all hover:bg-[#BF953F]/10"
+            className="group relative rounded-lg border border-[#BF953F]/30 px-8 py-3 font-medium text-[#FCF6BA] transition-all hover:bg-[#BF953F]/10"
           >
-            {t("secondary")}
+            <span className="relative z-10">{t("secondary")}</span>
+            <div className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-[#BF953F]/20 to-transparent opacity-0 blur-lg transition-opacity group-hover:opacity-100" />
           </a>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+        >
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-xs tracking-widest text-gray-600 uppercase">
+              {locale === "ar" ? "اسحب للأسفل" : "Scroll"}
+            </span>
+            <div className="h-8 w-[1px] bg-gradient-to-b from-[#BF953F] to-transparent" />
+          </div>
         </motion.div>
       </div>
 

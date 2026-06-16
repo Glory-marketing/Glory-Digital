@@ -20,8 +20,8 @@ export default function AboutPage() {
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
             {locale === "ar"
-              ? "من مطبعة صغيرة إلى وكالة تسويق رقمية متكاملة — رحلة مستمرة من الشغف والإبداع"
-              : "From a small print shop to a full digital marketing agency — a continuous journey of passion and creativity"}
+              ? "من مطبعة صغيرة إلى وكالة دعاية وإعلان وتسويق رقمية متكاملة — رحلة مستمرة من الشغف والإبداع"
+              : "From a small print shop to a full advertising & marketing agency — a continuous journey of passion and creativity"}
           </p>
         </div>
       </section>

@@ -6,14 +6,14 @@ const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Glory For Marketing",
-  description: "Premium marketing, design & development for brands that demand excellence",
+  title: "Glory Agency (Advertising & Marketing)",
+  description: "Premium advertising, marketing, design & development for brands that demand excellence",
   icons: {
     icon: `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`,
   },
   openGraph: {
-    title: "Glory For Marketing",
-    description: "Premium marketing, design & development for brands that demand excellence",
+    title: "Glory Agency (Advertising & Marketing)",
+    description: "Premium advertising, marketing, design & development for brands that demand excellence",
     images: ["/og-image.png"],
     type: "website",
   },

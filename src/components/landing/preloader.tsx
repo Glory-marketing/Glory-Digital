@@ -49,7 +49,7 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
           >
             <Image
               src="/logo.png"
-              alt="Glory"
+              alt="Glory Agency"
               width={180}
               height={60}
               className="h-auto w-44"
