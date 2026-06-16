@@ -24,8 +24,7 @@ export default function LandingLayout({
 
   return (
     <>
-      <div className="fixed left-0 right-0 top-0 z-50 h-[1px] bg-gradient-to-r from-transparent via-[#BF953F] to-transparent" />
-      <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/5 bg-[#0B0B0B]/80 backdrop-blur-xl">
+      <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/5 bg-[#0B0B0B]/80 backdrop-blur-xl before:absolute before:left-0 before:right-0 before:top-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-[#BF953F] before:to-transparent before:pointer-events-none">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href={`/${locale}`} className="flex items-center">
             <Image
