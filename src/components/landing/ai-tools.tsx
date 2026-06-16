@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 interface AnalyzerResult {
   score: number;
@@ -18,17 +18,10 @@ interface AnalyzerResult {
 
 export function AITools({ visible }: { visible: boolean }) {
   const tAna = useTranslations("analyzer");
-  const tChat = useTranslations("chatbot");
-  const tCom = useTranslations("common");
   const [url, setUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalyzerResult | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState<
-    { role: string; content: string }[]
-  >([]);
-  const [chatInput, setChatInput] = useState("");
 
   if (!visible) return null;
 
@@ -46,32 +39,10 @@ export function AITools({ visible }: { visible: boolean }) {
         setResult(data);
         setShowModal(true);
       }
-    } catch {
-      // handle error
-    }
-    setAnalyzing(false);
-  };
-
-  const handleChat = async () => {
-    if (!chatInput.trim()) return;
-    const userMsg = { role: "user", content: chatInput };
-    setChatMessages((prev) => [...prev, userMsg]);
-    setChatInput("");
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: chatInput }),
-      });
-      const data = await res.json();
-      setChatMessages((prev) => [...prev, { role: "assistant", content: data.error || data.content || "..." }]);
-    } catch {
-      setChatMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: tChat("sorry_unavailable") },
-      ]);
-    }
+      } catch {
+        alert(tAna("error") || "Analysis failed. Please try again.");
+      }
+      setAnalyzing(false);
   };
 
   return (
@@ -154,57 +125,7 @@ export function AITools({ visible }: { visible: boolean }) {
         )}
       </Modal>
 
-      {/* Chatbot FAB */}
-      <button
-        onClick={() => setChatOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-[#BF953F] to-[#B38728] text-black shadow-lg shadow-[#BF953F]/20 transition-all hover:scale-105"
-      >
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-        </svg>
-      </button>
 
-      <Modal open={chatOpen} onClose={() => setChatOpen(false)}>
-        <div className="flex h-[500px] flex-col">
-          <div className="mb-4 border-b border-white/10 pb-4">
-            <h3 className="text-lg font-semibold text-white">{tChat("title")}</h3>
-          </div>
-
-          <div className="flex-1 overflow-y-auto space-y-4 px-1">
-            {chatMessages.length === 0 && (
-              <div className="text-center text-sm text-gray-500 pt-8">
-                {tChat("greeting")}
-              </div>
-            )}
-            {chatMessages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-xl px-4 py-2 text-sm ${
-                    msg.role === "user"
-                      ? "bg-[#BF953F] text-black"
-                      : "bg-white/5 text-gray-200"
-                  }`}
-                >
-                  {msg.content}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 flex gap-2">
-            <Input
-              placeholder={tChat("placeholder")}
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleChat()}
-            />
-            <Button onClick={handleChat}>{tChat("send")}</Button>
-          </div>
-        </div>
-      </Modal>
     </>
   );
 }

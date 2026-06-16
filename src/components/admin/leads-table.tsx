@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -25,26 +24,25 @@ const statusColors: Record<string, "warning" | "success" | "default" | "gold"> =
   qualified: "success",
 };
 
-export function LeadsTable({ leads }: { leads: Lead[] }) {
+export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   const t = useTranslations("admin");
   const [search, setSearch] = useState("");
-  const [filtered, setFiltered] = useState(leads);
+  const [leads, setLeads] = useState(initialLeads);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const q = e.target.value.toLowerCase();
-    setSearch(q);
-    setFiltered(
+  const filtered = useMemo(
+    () =>
       leads.filter(
         (l) =>
-          l.name.toLowerCase().includes(q) ||
-          l.email.toLowerCase().includes(q)
-      )
-    );
-  };
+          l.name.toLowerCase().includes(search.toLowerCase()) ||
+          l.email.toLowerCase().includes(search.toLowerCase())
+      ),
+    [leads, search]
+  );
 
   const handleStatusChange = async (id: string, status: string) => {
     const { updateLeadStatus } = await import("@/server-actions/leads");
     await updateLeadStatus(id, status);
+    setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
   };
 
   return (
@@ -52,7 +50,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
       <Input
         placeholder={t("search_leads")}
         value={search}
-        onChange={handleSearch}
+        onChange={(e) => setSearch(e.target.value)}
       />
 
       <div className="overflow-x-auto rounded-xl border border-white/5">

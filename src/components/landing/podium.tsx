@@ -72,20 +72,12 @@ function PodiumTile({ position, color, label, index, onHover, isHovered }: Podiu
 
 function PodiumScene({ locale }: { locale: string }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  const ts = (label: string) => {
-    if (locale === "ar") {
-      if (label === "Marketing") return "تسويق";
-      if (label === "Design") return "تصميم";
-      if (label === "Coding") return "تطوير";
-    }
-    return label;
-  };
+  const t = useTranslations("services");
 
   const tiles = [
-    { position: [-2.5, 0, 0] as [number, number, number], color: "#BF953F", label: ts("Marketing") },
-    { position: [0, 0, 0] as [number, number, number], color: "#FCF6BA", label: ts("Design") },
-    { position: [2.5, 0, 0] as [number, number, number], color: "#B38728", label: ts("Coding") },
+    { position: [-2.5, 0, 0] as [number, number, number], color: "#BF953F", label: t("podium_marketing") },
+    { position: [0, 0, 0] as [number, number, number], color: "#FCF6BA", label: t("podium_design") },
+    { position: [2.5, 0, 0] as [number, number, number], color: "#B38728", label: t("podium_coding") },
   ];
 
   return (

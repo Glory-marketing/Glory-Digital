@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import { acceptInvitation } from "@/server-actions/invitations";
 import { useToast } from "@/components/ui/toast";
 import { useTranslations, useLocale } from "next-intl";
 
-export default function AcceptInvitePage() {
+function AcceptInviteForm() {
   const t = useTranslations("accept_invite");
   const locale = useLocale();
   const searchParams = useSearchParams();
@@ -97,5 +98,17 @@ export default function AcceptInvitePage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function AcceptInvitePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0B0B]">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    }>
+      <AcceptInviteForm />
+    </Suspense>
   );
 }

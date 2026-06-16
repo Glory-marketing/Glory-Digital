@@ -47,9 +47,9 @@ export function ContactForm({
     const formData = new FormData(form);
 
     try {
-      await submitLead(formData).catch(() => {});
+      await submitLead(formData);
     } catch {
-      // silent
+      toast(t.error || (locale === "ar" ? "حدث خطأ" : "Something went wrong"), "error");
     }
 
     const name = formData.get("name") as string;
@@ -122,7 +122,9 @@ export function ContactForm({
           transition={{ duration: 0.5 }}
           onSubmit={handleSubmit}
           className="mx-auto max-w-lg space-y-5 rounded-2xl border border-white/5 bg-[#121212]/80 p-8 backdrop-blur-xl"
+          style={{ direction: locale === "ar" ? "rtl" : "ltr" }}
         >
+          <input type="hidden" name="service" value={category} />
           <Input id="name" name="name" label={t.name} placeholder="John Doe" required />
           <Input id="email" name="email" type="email" label={t.email} placeholder="john@example.com" required />
           <Input id="phone" name="phone" type="tel" label={t.phone || (locale === "ar" ? "رقم الهاتف" : "Phone")} placeholder="+20 100 000 0000" />

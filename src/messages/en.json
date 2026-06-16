@@ -10,7 +10,10 @@
     "contact_us": "Contact Us",
     "phone": "Phone",
     "footer_desc": "Glory For Marketing - Your complete partner in advertising, printing materials, flyers, and digital marketing. We build glory for your brand.",
-    "all_rights": "All rights reserved."
+    "all_rights": "All rights reserved.",
+    "wa_marketing": "WhatsApp Marketing",
+    "wa_printing": "WhatsApp Printing",
+    "location": "Location"
   },
   "hero": {
     "headline_prefix": "We Build Digital",
@@ -28,7 +31,10 @@
     "design": "Design",
     "design_desc": "Visual identities that captivate and communicate your brand story",
     "coding": "Development",
-    "coding_desc": "Custom platforms built with cutting-edge technology"
+    "coding_desc": "Custom platforms built with cutting-edge technology",
+    "podium_marketing": "Marketing",
+    "podium_design": "Design",
+    "podium_coding": "Development"
   },
   "about": {
     "title": "About Glory",
@@ -61,6 +67,7 @@
     "sending": "Sending...",
     "thank_you": "Thank You!",
     "success": "Thank you! We'll be in touch shortly.",
+    "error": "Something went wrong. Please try again.",
     "services": {
       "marketing": "Marketing Campaign",
       "marketing_social": "Social Media Marketing",
