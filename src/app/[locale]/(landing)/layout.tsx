@@ -8,7 +8,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { GlobalChatbot } from "@/components/landing/global-chatbot";
 
-const WHATSAPP_MARKETING = "20115191604";
+const WHATSAPP_MARKETING = "201115191604";
 const WHATSAPP_PRINTING = "201123328964";
 const LOCATION_URL = "https://share.google/XYPHbFZfOtw4tCYfI";
 
