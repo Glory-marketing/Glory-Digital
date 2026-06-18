@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { createPortfolioProject, updatePortfolioProject, deletePortfolioProject } from "@/server-actions/portfolio";
 import { useTranslations } from "next-intl";
+import { AiImageAnalyzer } from "@/components/admin/ai-image-analyzer";
+import type { AnalysisResult } from "@/components/admin/ai-image-analyzer";
 
 interface Project {
   id: string;
@@ -59,6 +61,18 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
 
+  const handleAiResult = (result: AnalysisResult) => {
+    const set = (name: string, value: string) => {
+      const el = document.querySelector(`[name="${name}"]`) as HTMLInputElement | HTMLTextAreaElement | null;
+      if (el) el.value = value;
+    };
+    set("title_en", result.title_en);
+    set("title_ar", result.title_ar);
+    set("category", result.category);
+    set("description_en", result.description_en);
+    set("description_ar", result.description_ar);
+  };
+
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -100,6 +114,7 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
         <Card>
           <h3 className="mb-4 text-lg font-semibold text-white">{t("new_project")}</h3>
           <form onSubmit={handleCreate} className="space-y-4">
+            <AiImageAnalyzer onResult={handleAiResult} />
             <div className="grid gap-4 md:grid-cols-2">
               <Input name="title_en" placeholder={t("title_en")} required />
               <Input name="title_ar" placeholder={t("title_ar")} required />
@@ -123,7 +138,7 @@ export function PortfolioManager({ projects: initial }: { projects: Project[] })
                   onClick={async (e) => {
                     const container = (e.target as HTMLElement).closest('div');
                     const arTa = container?.querySelector('textarea') as HTMLTextAreaElement;
-                    const enDiv = container?.closest('.grid')?.querySelector('textarea[name="description_en"]') as HTMLTextAreaElement;
+                    const enDiv = document.querySelector('textarea[name="description_en"]') as HTMLTextAreaElement;
                     if (arTa?.value && enDiv) {
                       const res = await fetch("/api/chat", {
                         method: "POST",

@@ -5,11 +5,11 @@ import { motion, useInView } from "framer-motion";
 import { useLocale } from "next-intl";
 
 const milestones = [
-  { year: "2002", en: "The Beginning", ar: "البداية", enDesc: "A small printing shop with a big dream — that's where Glory Agency was born in the heart of the city.", arDesc: "مطبعة صغيرة بحلم كبير — هكذا ولدت جلوري إيجنسي في قلب المدينة." },
+  { year: "2002", en: "The Beginning", ar: "البداية", enDesc: "A small printing shop with a big dream — that's where Glory Agency was born in the heart of the city.", arDesc: "مطبعة صغيرة بحلم كبير — هكذا ولدت وكالة جلوري في قلب المدينة." },
   { year: "2008", en: "The Expansion", ar: "التوسع", enDesc: "From printing to branding. We added design services and grew our team of creatives.", arDesc: "من الطباعة إلى بناء العلامات التجارية. أضفنا خدمات التصميم ووسعنا فريق المبدعين." },
   { year: "2015", en: "Digital Transformation", ar: "التحول الرقمي", enDesc: "The digital wave hit and we rode it. Websites, social media, digital advertising — we mastered it all.", arDesc: "جاءت الموجة الرقمية وركبناها. المواقع، السوشيال ميديا، الإعلانات الرقمية — أتقناها جميعاً." },
   { year: "2020", en: "The Pivot", ar: "التحول", enDesc: "When the world changed, we evolved. Remote work, AI tools, and a new vision for the future of advertising and marketing.", arDesc: "عندما تغير العالم، تطورنا. العمل عن بعد، أدوات الذكاء الاصطناعي، ورؤية جديدة لمستقبل الدعاية والإعلان والتسويق." },
-  { year: "2024+", en: "Glory Agency", ar: "جلوري إيجنسي", enDesc: "Today we're a full-service advertising & marketing powerhouse — blending creativity, technology, and strategy to build your glory.", arDesc: "اليوم نحن وكالة دعاية وإعلان وتسويق متكاملة — نمزج بين الإبداع، التكنولوجيا، والاستراتيجية لنبني مجدك." },
+  { year: "2024+", en: "Glory Agency", ar: "وكالة جلوري", enDesc: "Today we're a full-service advertising & marketing powerhouse — blending creativity, technology, and strategy to build your glory.", arDesc: "اليوم نحن وكالة دعاية وإعلان وتسويق متكاملة — نمزج بين الإبداع، التكنولوجيا، والاستراتيجية لنبني مجدك." },
 ];
 
 const storyParagraphs = {
@@ -23,8 +23,8 @@ const storyParagraphs = {
   ar: [
     "بدأت القصة بآلة طباعة واحدة في ورشة صغيرة عام 2002. رجل برؤية — لتقديم الجودة، الإبداع، والثقة في كل ورقة تخرج من مطبعته.",
     "انتشر الخبر بسرعة. سرعان ما لم يطلب منه العملاء المحليون الطباعة فقط — بل أرادوا تصميماً، هوية، قصة. فكبرنا. تعلمنا. وظفنا فنانين، مفكرين، وحالمين.",
-    "بحلول 2015، أصبح العالم رقمياً، وكذلك نحن. مواقع، تطبيقات، حملات سوشيال ميديا — أصبحت جلوري إيجنسي الجسر بين الحرفية التقليدية والتكنولوجيا الحديثة.",
-    "اليوم، نحن جلوري إيجنسي. وكالة إبداعية متكاملة تتعامل مع كل شيء من بطاقة العمل إلى نظام العلامة التجارية الكامل. لا نجعل الأشياء تبدو جميلة فحسب — بل نجعلها تعمل.",
+    "بحلول 2015، أصبح العالم رقمياً، وكذلك نحن. مواقع، تطبيقات، حملات سوشيال ميديا — أصبحت وكالة جلوري الجسر بين الحرفية التقليدية والتكنولوجيا الحديثة.",
+    "اليوم، نحن وكالة جلوري. وكالة إبداعية متكاملة تتعامل مع كل شيء من بطاقة العمل إلى نظام العلامة التجارية الكامل. لا نجعل الأشياء تبدو جميلة فحسب — بل نجعلها تعمل.",
     "هذه قصتنا. وإن كنت تقرأ هذا، ربما حان الوقت لتكتب قصتك معنا.",
   ],
 };

@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { createService, updateService, deleteService } from "@/server-actions/services-actions";
 import { useTranslations } from "next-intl";
+import { AiImageAnalyzer } from "@/components/admin/ai-image-analyzer";
+import type { AnalysisResult } from "@/components/admin/ai-image-analyzer";
 
 function ImageUpload({ urlName, filePreview }: { urlName: string; filePreview?: string }) {
   const [preview, setPreview] = useState<string | null>(null);
@@ -52,6 +54,17 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
+
+  const handleAiResult = (result: AnalysisResult) => {
+    const set = (name: string, value: string) => {
+      const el = document.querySelector(`[name="${name}"]`) as HTMLInputElement | HTMLTextAreaElement | null;
+      if (el) el.value = value;
+    };
+    set("name_en", result.title_en);
+    set("name_ar", result.title_ar);
+    set("description_en", result.description_en);
+    set("description_ar", result.description_ar);
+  };
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -107,6 +120,7 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
         <Card>
           <h3 className="mb-4 text-lg font-semibold text-white">{t("new_service")}</h3>
           <form onSubmit={handleCreate} className="space-y-4">
+            <AiImageAnalyzer onResult={handleAiResult} />
             <div className="grid gap-4 md:grid-cols-2">
               <Input name="name_en" placeholder={t("service_name_en")} required />
               <Input name="name_ar" placeholder={t("service_name_ar")} required />
@@ -140,7 +154,7 @@ export function ServicesManager({ services: initial }: { services: ServiceItem[]
                   onClick={async (e) => {
                     const container = (e.target as HTMLElement).closest('div');
                     const arTa = container?.querySelector('textarea') as HTMLTextAreaElement;
-                    const enDiv = container?.closest('.grid')?.querySelector('textarea[name="description_en"]') as HTMLTextAreaElement;
+                    const enDiv = document.querySelector('textarea[name="description_en"]') as HTMLTextAreaElement;
                     if (arTa && arTa.value && enDiv) {
                       const res = await fetch("/api/chat", {
                         method: "POST",
