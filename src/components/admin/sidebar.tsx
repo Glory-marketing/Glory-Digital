@@ -18,6 +18,7 @@ const navItems = [
   { href: "/glory-admin/ai-manager", label: "admin.ai_manager", icon: "◎" },
   { href: "/glory-admin/analytics", label: "admin.analytics", icon: "◈" },
   { href: "/glory-admin/team", label: "admin.team", icon: "◉" },
+  { href: "/glory-admin/discount-codes", label: "admin.discount_codes", icon: "✧" },
 ];
 
 export function Sidebar({ locale }: { locale: string }) {

@@ -92,6 +92,35 @@ export interface AuditLog {
   timestamp: string;
 }
 
+export interface DiscountCode {
+  id: string;
+  code: string;
+  discount_percent: number;
+  description: string;
+  max_uses: number;
+  used_count: number;
+  expires_at: string | null;
+  is_active: boolean;
+  created_at: string;
+  created_by: string | null;
+}
+
+export interface ClientProject {
+  id: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string | null;
+  project_name: string;
+  project_type: string;
+  status: string;
+  notes: string | null;
+  files_url: string[];
+  budget: string | null;
+  discount_code_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -138,6 +167,16 @@ export interface Database {
       audit_log: {
         Row: AuditLog;
         Insert: Omit<AuditLog, "id" | "timestamp">;
+      };
+      discount_codes: {
+        Row: DiscountCode;
+        Insert: Omit<DiscountCode, "id" | "created_at" | "used_count">;
+        Update: Partial<DiscountCode>;
+      };
+      client_projects: {
+        Row: ClientProject;
+        Insert: Omit<ClientProject, "id" | "created_at" | "updated_at">;
+        Update: Partial<ClientProject>;
       };
     };
   };

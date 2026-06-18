@@ -68,6 +68,12 @@ export default function LandingLayout({
             >
               {t("contact")}
             </Link>
+            <Link
+              href={`/${locale}/quote`}
+              className="text-sm font-semibold bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent hover:brightness-110"
+            >
+              {t("quote")}
+            </Link>
             <div className="flex gap-2 border-l border-white/10 pl-4">
               {routing.locales.map((l) => (
                 <Link
@@ -133,6 +139,13 @@ export default function LandingLayout({
               >
                 {t("contact")}
               </Link>
+              <Link
+                href={`/${locale}/quote`}
+                onClick={() => setMobileMenu(false)}
+                className="text-sm font-semibold bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent"
+              >
+                {t("quote")}
+              </Link>
               <div className="flex gap-3 border-t border-white/5 pt-4">
                 {routing.locales.map((l) => (
                   <Link
@@ -196,6 +209,7 @@ export default function LandingLayout({
                 <li><Link href={`/${locale}`} className="hover:text-[#FCF6BA] transition-colors">{t("home")}</Link></li>
                 <li><Link href={`/${locale}/services`} className="hover:text-[#FCF6BA] transition-colors">{t("services")}</Link></li>
                 <li><Link href={`/${locale}/portfolio`} className="hover:text-[#FCF6BA] transition-colors">{t("portfolio")}</Link></li>
+                <li><Link href={`/${locale}/quote`} className="hover:text-[#FCF6BA] transition-colors">{t("quote")}</Link></li>
               </ul>
             </div>
             <div>
