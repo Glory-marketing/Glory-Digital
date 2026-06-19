@@ -69,6 +69,12 @@ export default function LandingLayout({
               {t("contact")}
             </Link>
             <Link
+              href={`/${locale}/client-portal`}
+              className="text-sm text-[#BF953F] hover:text-[#FCF6BA] transition-colors"
+            >
+              {locale === "ar" ? "بوابة العميل" : "Client Portal"}
+            </Link>
+            <Link
               href={`/${locale}/quote`}
               className="text-sm font-semibold bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent hover:brightness-110"
             >
@@ -138,6 +144,13 @@ export default function LandingLayout({
                 className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 {t("contact")}
+              </Link>
+              <Link
+                href={`/${locale}/client-portal`}
+                onClick={() => setMobileMenu(false)}
+                className="text-sm text-[#BF953F] hover:text-[#FCF6BA] transition-colors"
+              >
+                {locale === "ar" ? "بوابة العميل" : "Client Portal"}
               </Link>
               <Link
                 href={`/${locale}/quote`}

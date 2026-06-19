@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
+import { WhatsAppQuick } from "@/components/landing/whatsapp-quick";
+import { DesignPreview } from "@/components/landing/design-preview";
 
 interface Project {
   id: string;
@@ -74,7 +76,7 @@ export function Portfolio({ visible }: { visible: boolean }) {
               <div className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-b from-[#BF953F]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <div className="aspect-video bg-gradient-to-br from-[#BF953F]/10 to-[#B38728]/10 flex items-center justify-center relative overflow-hidden">
                 {project.image_url ? (
-                  <img src={project.image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <DesignPreview imageUrl={project.image_url} mockupType="phone" />
                 ) : (
                   <span className="text-4xl text-[#BF953F]/30">✦</span>
                 )}
@@ -90,6 +92,9 @@ export function Portfolio({ visible }: { visible: boolean }) {
                 {getDesc(project) && (
                   <p className="mt-1 text-xs text-gray-500 line-clamp-2">{getDesc(project)}</p>
                 )}
+                <div className="mt-3">
+                  <WhatsAppQuick serviceName={getTitle(project)} category={project.category} />
+                </div>
               </div>
             </motion.div>
           ))}
