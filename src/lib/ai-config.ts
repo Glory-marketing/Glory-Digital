@@ -1,75 +1,124 @@
-export interface AIModelConfig {
+interface ProviderConfig {
   endpoint: string;
   apiKey: string;
   models: {
-    chat: string;
-    vision: string;
-    translate: string;
-    enhance: string;
-    analyze: string;
+    chat: string[];
+    vision: string[];
+    translate: string[];
+    enhance: string[];
+    analyze: string[];
   };
 }
 
-const DEFAULT_CONFIG: AIModelConfig = {
-  endpoint: "https://api.groq.com/openai/v1",
-  apiKey: process.env.GROQ_API_KEY || "",
-  models: {
-    chat: "llama-3.3-70b-versatile",
-    vision: "llama-3.2-11b-vision-preview",
-    translate: "llama-3.3-70b-versatile",
-    enhance: "llama-3.3-70b-versatile",
-    analyze: "llama-3.3-70b-versatile",
-  },
-};
+function getProviders(): ProviderConfig[] {
+  const providers: ProviderConfig[] = [];
 
-let cachedConfig: AIModelConfig | null = null;
+  // Groq (primary)
+  const groqKey = process.env.GROQ_API_KEY || process.env.AI_API_KEY || "";
+  if (groqKey) {
+    providers.push({
+      endpoint: process.env.AI_ENDPOINT || "https://api.groq.com/openai/v1",
+      apiKey: groqKey,
+      models: {
+        chat: [process.env.AI_CHAT_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        vision: [process.env.AI_VISION_MODEL || "llama-3.2-11b-vision-preview"],
+        translate: [process.env.AI_TRANSLATE_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        enhance: [process.env.AI_ENHANCE_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        analyze: [process.env.AI_ANALYZE_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+      },
+    });
+  }
 
-export function getAIConfig(): AIModelConfig {
-  if (cachedConfig) return cachedConfig;
-  cachedConfig = { ...DEFAULT_CONFIG };
+  // OpenAI (fallback)
+  const openaiKey = process.env.OPENAI_API_KEY || "";
+  if (openaiKey) {
+    providers.push({
+      endpoint: "https://api.openai.com/v1",
+      apiKey: openaiKey,
+      models: {
+        chat: ["gpt-4o-mini", "gpt-4o"],
+        vision: ["gpt-4o-mini", "gpt-4o"],
+        translate: ["gpt-4o-mini", "gpt-4o"],
+        enhance: ["gpt-4o-mini", "gpt-4o"],
+        analyze: ["gpt-4o-mini", "gpt-4o"],
+      },
+    });
+  }
 
-  if (process.env.AI_ENDPOINT) cachedConfig.endpoint = process.env.AI_ENDPOINT;
-  if (process.env.AI_API_KEY) cachedConfig.apiKey = process.env.AI_API_KEY;
-  if (process.env.AI_CHAT_MODEL) cachedConfig.models.chat = process.env.AI_CHAT_MODEL;
-  if (process.env.AI_VISION_MODEL) cachedConfig.models.vision = process.env.AI_VISION_MODEL;
-  if (process.env.AI_TRANSLATE_MODEL) cachedConfig.models.translate = process.env.AI_TRANSLATE_MODEL;
-  if (process.env.AI_ENHANCE_MODEL) cachedConfig.models.enhance = process.env.AI_ENHANCE_MODEL;
-  if (process.env.AI_ANALYZE_MODEL) cachedConfig.models.analyze = process.env.AI_ANALYZE_MODEL;
+  return providers;
+}
 
-  return cachedConfig;
+function getModelFor(providers: ProviderConfig[], task: keyof ProviderConfig["models"]): string | null {
+  for (const p of providers) {
+    if (p.models[task]?.[0]) return p.models[task][0];
+  }
+  return null;
+}
+
+function getProviderFor(providers: ProviderConfig[], task: keyof ProviderConfig["models"]): ProviderConfig | null {
+  for (const p of providers) {
+    if (p.models[task]?.[0]) return p;
+  }
+  return null;
 }
 
 export async function aiChat(
   messages: { role: string; content: string }[],
   opts?: { model?: string; json?: boolean }
 ): Promise<string> {
-  const cfg = getAIConfig();
-  const model = opts?.model || cfg.models.chat;
-
-  const body: Record<string, unknown> = {
-    model,
-    messages,
-    temperature: 0.7,
-    max_tokens: 4096,
-  };
-  if (opts?.json) body.response_format = { type: "json_object" };
-
-  const res = await fetch(`${cfg.endpoint}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${cfg.apiKey}`,
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`AI API error (${res.status}): ${err}`);
+  const providers = getProviders();
+  if (providers.length === 0) {
+    throw new Error("No AI provider configured. Set GROQ_API_KEY or OPENAI_API_KEY in environment variables.");
   }
 
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || "";
+  const task = "chat";
+  const preferredModel = opts?.model;
+  const errors: string[] = [];
+
+  for (const provider of providers) {
+    const models = preferredModel ? [preferredModel, ...provider.models[task]] : provider.models[task];
+
+    for (const model of models) {
+      const body: Record<string, unknown> = {
+        model,
+        messages,
+        temperature: 0.7,
+        max_tokens: 4096,
+      };
+      if (opts?.json) body.response_format = { type: "json_object" };
+
+      try {
+        const res = await fetch(`${provider.endpoint}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${provider.apiKey}`,
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          return data.choices?.[0]?.message?.content || "";
+        }
+
+        const errText = await res.text();
+        const skipErrors = ["decommissioned", "not found", "model_not_found", "invalid_model"];
+        const shouldSkip = skipErrors.some(s => errText.toLowerCase().includes(s));
+        if (!shouldSkip) {
+          errors.push(`${provider.endpoint} (${model}): ${res.status} ${errText.substring(0, 150)}`);
+          // If it's an auth error (401), skip this provider entirely
+          if (res.status === 401) break;
+        }
+      } catch (fetchErr) {
+        errors.push(`${provider.endpoint} (${model}): ${fetchErr instanceof Error ? fetchErr.message : "fetch failed"}`);
+      }
+    }
+  }
+
+  throw new Error(
+    `All AI providers failed:\n${errors.join("\n")}\n\nMake sure your API keys are valid. If using Groq, your key should start with "gsk_".`
+  );
 }
 
 export async function aiVision(
@@ -77,36 +126,98 @@ export async function aiVision(
   prompt: string,
   opts?: { model?: string }
 ): Promise<string> {
-  const cfg = getAIConfig();
-  const model = opts?.model || cfg.models.vision;
-
-  const res = await fetch(`${cfg.endpoint}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${cfg.apiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64Image}` } },
-          ],
-        },
-      ],
-      temperature: 0.3,
-      max_tokens: 4096,
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`AI Vision API error (${res.status}): ${err}`);
+  const providers = getProviders();
+  if (providers.length === 0) {
+    throw new Error("No AI provider configured. Set GROQ_API_KEY or OPENAI_API_KEY.");
   }
 
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || "";
+  const preferredModel = opts?.model;
+  const errors: string[] = [];
+
+  for (const provider of providers) {
+    const models = preferredModel ? [preferredModel, ...provider.models.vision] : provider.models.vision;
+
+    for (const model of models) {
+      try {
+        const res = await fetch(`${provider.endpoint}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${provider.apiKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              {
+                role: "user",
+                content: [
+                  { type: "text", text: prompt },
+                  { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64Image}` } },
+                ],
+              },
+            ],
+            temperature: 0.3,
+            max_tokens: 4096,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          return data.choices?.[0]?.message?.content || "";
+        }
+
+        const errText = await res.text();
+        const skipErrors = ["decommissioned", "not found", "model_not_found"];
+        if (!skipErrors.some(s => errText.toLowerCase().includes(s))) {
+          errors.push(`${provider.endpoint} (${model}): ${res.status} ${errText.substring(0, 150)}`);
+          if (res.status === 401) break;
+        }
+      } catch (fetchErr) {
+        errors.push(`${provider.endpoint} (${model}): ${fetchErr instanceof Error ? fetchErr.message : "fetch failed"}`);
+      }
+    }
+  }
+
+  throw new Error(`All AI vision providers failed:\n${errors.join("\n")}`);
+}
+
+export async function testAIConfig(): Promise<{
+  ok: boolean;
+  providers: number;
+  groqKey: boolean;
+  openaiKey: boolean;
+  message: string;
+}> {
+  const providers = getProviders();
+  const groqKey = !!(process.env.GROQ_API_KEY || process.env.AI_API_KEY);
+  const openaiKey = !!process.env.OPENAI_API_KEY;
+
+  if (providers.length === 0) {
+    return {
+      ok: false,
+      providers: 0,
+      groqKey,
+      openaiKey,
+      message: "No AI provider keys found. Set GROQ_API_KEY or OPENAI_API_KEY in Vercel environment variables.",
+    };
+  }
+
+  try {
+    await aiChat([{ role: "user", content: "Say OK" }]);
+    return {
+      ok: true,
+      providers: providers.length,
+      groqKey,
+      openaiKey,
+      message: "AI is working. Providers configured: " + providers.length,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      providers: providers.length,
+      groqKey,
+      openaiKey,
+      message: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
 }

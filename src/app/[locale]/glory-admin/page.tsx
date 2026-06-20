@@ -1,5 +1,6 @@
 import { DashboardStats } from "@/components/admin/dashboard-stats";
 import { getTranslations } from "next-intl/server";
+import { AIDiagnostics } from "@/components/admin/ai-diagnostics";
 
 export default async function AdminDashboard({
   params,
@@ -23,6 +24,8 @@ export default async function AdminDashboard({
       </div>
 
       <DashboardStats locale={locale} />
+
+      <AIDiagnostics />
     </div>
   );
 }
