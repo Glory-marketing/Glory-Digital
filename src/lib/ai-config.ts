@@ -22,31 +22,24 @@ function getProviders(): ProviderConfig[] {
       apiKey: unifiedKey,
       models: {
         chat: [
-          process.env.AI_CHAT_MODEL || "deepseek-v4-pro",
-          "deepseek-v4-flash",
-          "kimi-k2.6",
-          "mistral-large",
-          "qwen-3.5-plus",
+          process.env.AI_CHAT_MODEL || "groq/llama-3.3-70b-versatile",
+          "groq/qwen/qwen3-32b",
         ],
         vision: [
-          process.env.AI_VISION_MODEL || "deepseek-v4-pro",
-          "deepseek-v4-flash",
-          "kimi-k2.6",
+          process.env.AI_VISION_MODEL || "groq/llama-3.3-70b-versatile",
+          "groq/qwen/qwen3-32b",
         ],
         translate: [
-          process.env.AI_TRANSLATE_MODEL || "deepseek-v4-flash",
-          "deepseek-v4-pro",
-          "qwen-3.5-plus",
+          process.env.AI_TRANSLATE_MODEL || "groq/llama-3.3-70b-versatile",
+          "groq/qwen/qwen3-32b",
         ],
         enhance: [
-          process.env.AI_ENHANCE_MODEL || "deepseek-v4-flash",
-          "deepseek-v4-pro",
-          "mistral-large",
+          process.env.AI_ENHANCE_MODEL || "groq/llama-3.3-70b-versatile",
+          "groq/qwen/qwen3-32b",
         ],
         analyze: [
-          process.env.AI_ANALYZE_MODEL || "deepseek-v4-pro",
-          "deepseek-v4-flash",
-          "kimi-k2.6",
+          process.env.AI_ANALYZE_MODEL || "groq/llama-3.3-70b-versatile",
+          "groq/qwen/qwen3-32b",
         ],
       },
     });
