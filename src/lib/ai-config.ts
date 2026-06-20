@@ -26,8 +26,7 @@ function getProviders(): ProviderConfig[] {
           "groq/qwen/qwen3-32b",
         ],
         vision: [
-          process.env.AI_VISION_MODEL || "groq/llama-3.3-70b-versatile",
-          "groq/qwen/qwen3-32b",
+          process.env.AI_VISION_MODEL || "mimo/mimo-v2-omni",
         ],
         translate: [
           process.env.AI_TRANSLATE_MODEL || "groq/llama-3.3-70b-versatile",
