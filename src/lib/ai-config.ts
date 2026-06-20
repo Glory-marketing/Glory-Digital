@@ -13,18 +13,57 @@ interface ProviderConfig {
 function getProviders(): ProviderConfig[] {
   const providers: ProviderConfig[] = [];
 
+  // AI_API_KEY (unified — e.g. DOUGH.ID, OpenRouter, or custom proxy)
+  const unifiedKey = process.env.AI_API_KEY || "";
+  if (unifiedKey) {
+    const endpoint = process.env.AI_ENDPOINT || "https://api.openai.com/v1";
+    providers.push({
+      endpoint,
+      apiKey: unifiedKey,
+      models: {
+        chat: [
+          process.env.AI_CHAT_MODEL || "deepseek-v4-pro",
+          "deepseek-v4-flash",
+          "kimi-k2.6",
+          "mistral-large",
+          "qwen-3.5-plus",
+        ],
+        vision: [
+          process.env.AI_VISION_MODEL || "deepseek-v4-pro",
+          "deepseek-v4-flash",
+          "kimi-k2.6",
+        ],
+        translate: [
+          process.env.AI_TRANSLATE_MODEL || "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "qwen-3.5-plus",
+        ],
+        enhance: [
+          process.env.AI_ENHANCE_MODEL || "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "mistral-large",
+        ],
+        analyze: [
+          process.env.AI_ANALYZE_MODEL || "deepseek-v4-pro",
+          "deepseek-v4-flash",
+          "kimi-k2.6",
+        ],
+      },
+    });
+  }
+
   // Groq (primary)
-  const groqKey = process.env.GROQ_API_KEY || process.env.AI_API_KEY || "";
+  const groqKey = process.env.GROQ_API_KEY || "";
   if (groqKey) {
     providers.push({
-      endpoint: process.env.AI_ENDPOINT || "https://api.groq.com/openai/v1",
+      endpoint: "https://api.groq.com/openai/v1",
       apiKey: groqKey,
       models: {
-        chat: [process.env.AI_CHAT_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
-        vision: [process.env.AI_VISION_MODEL || "llama-3.2-11b-vision-preview"],
-        translate: [process.env.AI_TRANSLATE_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
-        enhance: [process.env.AI_ENHANCE_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
-        analyze: [process.env.AI_ANALYZE_MODEL || "llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        chat: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        vision: ["llama-3.2-11b-vision-preview"],
+        translate: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        enhance: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        analyze: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
       },
     });
   }
