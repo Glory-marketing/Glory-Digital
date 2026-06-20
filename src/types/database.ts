@@ -121,6 +121,18 @@ export interface ClientProject {
   updated_at: string;
 }
 
+export interface PrintingMaterial {
+  id: string;
+  name_en: string;
+  name_ar: string;
+  size: string;
+  material_type: string;
+  price: string;
+  service_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -177,6 +189,11 @@ export interface Database {
         Row: ClientProject;
         Insert: Omit<ClientProject, "id" | "created_at" | "updated_at">;
         Update: Partial<ClientProject>;
+      };
+      printing_materials: {
+        Row: PrintingMaterial;
+        Insert: Omit<PrintingMaterial, "id" | "created_at" | "updated_at">;
+        Update: Partial<PrintingMaterial>;
       };
     };
   };
