@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { aiVision } from "@/lib/ai-config";
+import sharp from "sharp";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,13 @@ export async function POST(request: NextRequest) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const base64 = buffer.toString("base64");
+
+    const resized = await sharp(buffer)
+      .resize(1024, 1024, { fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    const base64 = resized.toString("base64");
 
     const prompt = `You are an expert advertising & marketing analyst for Glory Agency (وكالة جلوري). Analyze this image and respond in STRICT JSON format with NO markdown, NO code fences, just raw JSON:
 
