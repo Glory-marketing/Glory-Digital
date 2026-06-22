@@ -57,7 +57,9 @@ export function ClientsTable({
                     ? isRtl ? "مشرف عام" : "Super Admin"
                     : client.role === "Admin"
                       ? isRtl ? "مشرف" : "Admin"
-                      : isRtl ? "محرر" : "Editor"}
+                      : client.role === "Editor"
+                        ? isRtl ? "محرر" : "Editor"
+                        : isRtl ? "عميل" : "Client"}
                 </Badge>
                 {!client.is_active && (
                   <Badge variant="danger">

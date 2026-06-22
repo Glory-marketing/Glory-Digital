@@ -110,6 +110,7 @@ export interface ClientProject {
   client_name: string;
   client_email: string;
   client_phone: string | null;
+  client_id: string | null;
   project_name: string;
   project_type: string;
   status: string;
