@@ -5,6 +5,8 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { invitationSchema } from "@/lib/validators";
 import { generateToken } from "@/lib/utils";
+import { sendInfoEmail } from "@/lib/email";
+import { invitationEmailHtml } from "@/emails/invitation";
 
 const INVITATION_EXPIRY_HOURS = 24;
 
@@ -49,6 +51,21 @@ export async function sendInvitation(email: string, role: string) {
   });
 
   if (error) throw new Error("Failed to create invitation");
+
+  const { error: emailErr } = await sendInfoEmail(
+    email,
+    role === "Client"
+      ? "Welcome to Glory Agency! / مرحباً بك في Glory Agency"
+      : "You're invited to join Glory Agency / دعوة للانضمام إلى Glory Agency",
+    invitationEmailHtml({
+      inviteLink,
+      role,
+      invitedByEmail: user.email || "",
+      locale: "en",
+    })
+  );
+
+  if (emailErr) console.error("Failed to send invitation email:", emailErr);
 
   revalidatePath("/[locale]/glory-admin/team");
   return { success: true, token, inviteLink };

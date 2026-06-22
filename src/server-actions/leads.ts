@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { leadSchema } from "@/lib/validators";
 import { headers } from "next/headers";
+import { notifyAdmin } from "@/lib/email";
+import { leadNotificationHtml } from "@/emails/lead-notification";
 
 export async function submitLead(formData: FormData) {
   const supabase = await createServerSupabaseClient();
@@ -35,6 +37,20 @@ export async function submitLead(formData: FormData) {
   });
 
   if (error) throw new Error("Failed to submit lead");
+
+  const locale = headersList.get("accept-language")?.startsWith("ar") ? "ar" as const : "en" as const;
+  await notifyAdmin(
+    locale === "ar" ? `طلب جديد من ${validated.name}` : `New lead from ${validated.name}`,
+    leadNotificationHtml({
+      name: validated.name,
+      email: validated.email,
+      phone: validated.phone || null,
+      service: validated.service,
+      budget: null,
+      brief: validated.brief || null,
+      locale,
+    })
+  );
 
   revalidatePath("/[locale]/glory-admin/leads");
   return { success: true };
