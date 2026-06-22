@@ -15,6 +15,16 @@ export default async function TeamPage({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const invDb = supabase.from("invitations") as any;
 
+  const { data: { user } } = await supabase.auth.getUser();
+  let userRole: string | null = null;
+  if (user) {
+    const { data: profile } = await profDb
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    userRole = profile?.role || null;
+  }
+
   const { data: members } = await profDb
     .select("*")
     .order("created_at", { ascending: false });
@@ -32,7 +42,7 @@ export default async function TeamPage({
         </p>
       </div>
 
-      <TeamInvite members={members || []} invitations={invitations || []} />
+      <TeamInvite members={members || []} invitations={invitations || []} userRole={userRole} />
     </div>
   );
 }

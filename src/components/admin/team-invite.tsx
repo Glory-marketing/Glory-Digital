@@ -29,9 +29,11 @@ interface Member {
 export function TeamInvite({
   members,
   invitations,
+  userRole,
 }: {
   members: Member[];
   invitations: Invitation[];
+  userRole?: string | null;
 }) {
   const t = useTranslations("admin");
   const { toast } = useToast();
@@ -41,8 +43,9 @@ export function TeamInvite({
   const [sending, setSending] = useState(false);
   const [inviteLink, setInviteLink] = useState("");
 
+  const effectiveRole = profile?.role || userRole;
   const canInvite =
-    profile?.role === "Super_Admin" || profile?.role === "Admin";
+    effectiveRole === "Super_Admin" || effectiveRole === "Admin";
 
   const handleInvite = async () => {
     if (!email) return;

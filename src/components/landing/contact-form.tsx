@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { submitLead } from "@/server-actions/leads";
 import { useToast } from "@/components/ui/toast";
 
-const WHATSAPP_MARKETING = "201115191604";
+const WHATSAPP_MARKETING = "201123328964";
 const WHATSAPP_PRINTING = "201123328964";
 
 const categoryKeys = ["marketing", "printing", "flyers", "digital", "full"];

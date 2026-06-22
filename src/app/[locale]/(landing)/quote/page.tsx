@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 
-const WHATSAPP_MARKETING = "201115191604";
+const WHATSAPP_MARKETING = "201123328964";
 
 interface ServiceOption {
   id: string;
@@ -112,9 +112,7 @@ export default function QuotePage() {
         </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Service Selector */}
           <div className="lg:col-span-2">
-            {/* Category Tabs */}
             <div className="flex gap-2 mb-8 flex-wrap">
               {categories.map(cat => (
                 <button
@@ -131,7 +129,6 @@ export default function QuotePage() {
               ))}
             </div>
 
-            {/* Service Grid */}
             <div className="grid gap-3 sm:grid-cols-2">
               {filtered.map(svc => {
                 const qty = selected[svc.id] || 0;
@@ -186,7 +183,6 @@ export default function QuotePage() {
             </div>
           </div>
 
-          {/* Quote Summary */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 rounded-2xl border border-white/5 bg-[#121212] p-6">
               <h3 className="text-lg font-semibold text-white mb-4">

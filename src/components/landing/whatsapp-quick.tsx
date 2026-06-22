@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
-const WHATSAPP_MARKETING = "201115191604";
+const WHATSAPP_MARKETING = "201123328964";
 const WHATSAPP_PRINTING = "201123328964";
 
 export function WhatsAppQuick({

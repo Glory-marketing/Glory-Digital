@@ -5,7 +5,7 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
-const WHATSAPP_NUMBER = "201115191604";
+const WHATSAPP_NUMBER = "201123328964";
 
 const TIME_SLOTS = [
   { value: "morning", en: "Morning (10 AM - 1 PM)", ar: "الفترة الصباحية (10 ص - 1 م)" },
