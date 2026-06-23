@@ -95,8 +95,14 @@ export async function acceptInvitation(token: string, password: string) {
 
   if (authError || !authData.user) throw new Error("Failed to create user");
 
+  // Ensure profile exists with correct role (upsert in case trigger failed)
   await (adminClient.from("profiles") as any)
-    .update({ role: invitation.role, is_active: true })
+    .upsert({
+      id: authData.user.id,
+      email: invitation.email,
+      role: invitation.role,
+      is_active: true,
+    })
     .eq("id", authData.user.id);
 
   await invDb

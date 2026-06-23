@@ -7,19 +7,21 @@ export async function GET(request: NextRequest) {
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/en/glory-admin";
-
   const redirectTo = searchParams.get("redirect_to") ?? next;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.redirect(`${origin}/en?error=config_error`);
+  }
+
+  // Token hash verification (email confirmation, magic link, etc.)
   if (token_hash && type) {
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
       cookies: {
         getAll() { return request.cookies.getAll(); },
-        setAll(cookiesToSet) {
-          // cookies are set via the response below
-        },
+        setAll() {},
       },
     });
 
@@ -40,16 +42,17 @@ export async function GET(request: NextRequest) {
           },
         },
       });
-      await supabase2.auth.verifyOtp({
+      const { error: verifyErr } = await supabase2.auth.verifyOtp({
         token_hash,
         type: type as "magiclink" | "signup" | "email" | "recovery",
       });
-      return response;
+      if (!verifyErr) return response;
     }
 
-    return NextResponse.redirect(`${origin}/en`);
+    return NextResponse.redirect(`${origin}/en?error=verification_failed`);
   }
 
+  // OAuth code exchange (Google, etc.)
   if (code) {
     const response = NextResponse.redirect(`${origin}${redirectTo}`);
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
@@ -64,11 +67,11 @@ export async function GET(request: NextRequest) {
     });
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return response;
-    }
+    if (!error) return response;
 
-    return NextResponse.redirect(`${origin}/en`);
+    // OAuth failed — redirect with error message
+    const msg = error.message || "oauth_failed";
+    return NextResponse.redirect(`${origin}/en/client-portal/login?error=${encodeURIComponent(msg)}`);
   }
 
   return NextResponse.redirect(`${origin}/en`);

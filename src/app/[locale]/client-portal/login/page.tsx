@@ -35,7 +35,7 @@ export default async function ClientPortalLogin({
     const lang = formData.get("locale") as string;
     const supabase = await createServerSupabaseClient();
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: name, role: "Client" } },
@@ -44,18 +44,37 @@ export default async function ClientPortalLogin({
     if (error) {
       redirect(`/${lang}/client-portal/login?tab=signup&error=${encodeURIComponent(error.message)}`);
     }
+
+    // Ensure profile is created (fallback if trigger fails)
+    if (data?.user?.id) {
+      const adminClient = (await import("@/lib/supabase/admin")).createAdminClient();
+      await (adminClient.from("profiles") as any)
+        .upsert({
+          id: data.user.id,
+          email,
+          full_name: name,
+          role: "Client",
+          is_active: true,
+        })
+        .eq("id", data.user.id);
+    }
+
     redirect(`/${lang}/client-portal/login?success=true`);
   }
 
   async function handleGoogleSignIn() {
     "use server";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || `https://${process.env.VERCEL_URL || "glory.dpdns.org"}`;
     const supabase = await createServerSupabaseClient();
-    const { data } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/auth/callback?next=/${locale}/client-portal`,
+        redirectTo: `${appUrl}/api/auth/callback?next=/${locale}/client-portal`,
       },
     });
+    if (error) {
+      redirect(`/${locale}/client-portal/login?error=${encodeURIComponent(error.message)}`);
+    }
     if (data?.url) redirect(data.url);
   }
 

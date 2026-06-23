@@ -5,15 +5,19 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/en/glory-admin";
+  const next = searchParams.get("next") ?? "/en/client-portal";
   const redirect_to = searchParams.get("redirect_to") ?? next;
 
   if (!token_hash || !type) {
-    return NextResponse.redirect(`${origin}/en/login`);
+    return NextResponse.redirect(`${origin}/en/client-portal/login`);
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.redirect(`${origin}/en?error=config_error`);
+  }
 
   const response = NextResponse.redirect(`${origin}${redirect_to}`);
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
@@ -34,7 +38,7 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     console.error("Auth confirm error:", error.message);
-    return NextResponse.redirect(`${origin}/en?error=${error.message}`);
+    return NextResponse.redirect(`${origin}/en/client-portal/login?error=${encodeURIComponent(error.message)}`);
   }
 
   return response;
