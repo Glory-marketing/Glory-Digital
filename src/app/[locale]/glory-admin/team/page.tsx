@@ -1,6 +1,10 @@
 import { TeamInvite } from "@/components/admin/team-invite";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getTranslations } from "next-intl/server";
+import type { Profile } from "@/types/database";
+
+export const dynamic = "force-dynamic";
 
 export default async function TeamPage({
   params,
@@ -10,28 +14,29 @@ export default async function TeamPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "admin" });
   const supabase = await createServerSupabaseClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const profDb = supabase.from("profiles") as any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const invDb = supabase.from("invitations") as any;
+  const adminClient = createAdminClient();
 
   const { data: { user } } = await supabase.auth.getUser();
+
+  const profDb = adminClient.from("profiles");
+  const invDb = adminClient.from("invitations");
+
+  const { data: members } = await profDb
+    .select("*")
+    .order("created_at", { ascending: false }) as unknown as { data: Profile[] | null };
+
+  const { data: invitations } = await invDb
+    .select("*")
+    .order("created_at", { ascending: false });
+
   let userRole: string | null = null;
   if (user) {
     const { data: profile } = await profDb
       .select("role")
       .eq("id", user.id)
-      .single();
+      .single() as unknown as { data: { role: string } | null };
     userRole = profile?.role || null;
   }
-
-  const { data: members } = await profDb
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const { data: invitations } = await invDb
-    .select("*")
-    .order("created_at", { ascending: false });
 
   return (
     <div className="space-y-8">

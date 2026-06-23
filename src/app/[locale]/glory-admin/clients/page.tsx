@@ -1,7 +1,9 @@
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getTranslations } from "next-intl/server";
 import { ClientsTable } from "@/components/admin/clients-table";
 import type { Profile } from "@/types/database";
+
+export const dynamic = "force-dynamic";
 
 export default async function ClientsPage({
   params,
@@ -10,25 +12,23 @@ export default async function ClientsPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "admin" });
-  const supabase = await createServerSupabaseClient();
+  const adminClient = createAdminClient();
 
-  // Get users who are either explicitly Client role OR have client_projects
-  const { data: rawClients } = await supabase
-    .from("profiles")
+  const profDb = adminClient.from("profiles");
+
+  const { data: rawClients } = await profDb
     .select("*")
     .or("role.eq.Client,role.eq.Editor")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false }) as unknown as { data: Profile[] | null };
 
-  const clients = (rawClients || []) as unknown as Profile[];
+  const clients = (rawClients || []) as Profile[];
 
-  // Also get users who have client_projects to cross-reference
-  const { data: projectClientsRaw } = await supabase
-    .from("client_projects" as never)
+  const { data: projectClientsRaw } = await adminClient
+    .from("client_projects")
     .select("client_email") as unknown as { data: { client_email: string }[] | null };
 
   const projectEmails = new Set(projectClientsRaw?.map((p) => p.client_email?.toLowerCase()) || []);
 
-  // Filter: show users who are Client role, OR have Editor role but have associated client projects
   const filteredClients = clients.filter(
     (c) => c.role === "Client" || projectEmails.has(c.email?.toLowerCase())
   );
@@ -40,7 +40,7 @@ export default async function ClientsPage({
         <p className="text-sm text-gray-500">{t("clients_desc")}</p>
       </div>
 
-      <ClientsTable clients={filteredClients || []} locale={locale} />
+      <ClientsTable clients={filteredClients} locale={locale} />
     </div>
   );
 }
