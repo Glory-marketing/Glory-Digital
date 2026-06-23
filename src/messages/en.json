@@ -170,6 +170,7 @@
     "leads_desc": "Manage incoming leads",
     "analytics_title": "Analytics",
     "analytics_desc": "Track your performance",
+    "permissions": "Permissions",
     "clients": "Clients",
     "clients_title": "Registered Clients",
     "clients_desc": "View all registered clients on the platform",
