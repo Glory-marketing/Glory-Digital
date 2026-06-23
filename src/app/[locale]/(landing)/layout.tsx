@@ -245,8 +245,16 @@ export default function LandingLayout({
               </ul>
             </div>
           </div>
-          <div className="mt-12 border-t border-white/5 pt-8 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="mt-12 border-t border-white/5 pt-8">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+              <Link href={`/${locale}/privacy-policy`} className="hover:text-[#FCF6BA] transition-colors">
+                {t("privacy")}
+              </Link>
+              <Link href={`/${locale}/terms-of-service`} className="hover:text-[#FCF6BA] transition-colors">
+                {t("terms")}
+              </Link>
+            </div>
+            <p className="mt-4 text-center text-sm text-gray-600">
               &copy; {new Date().getFullYear()} Glory Agency (Advertising & Marketing). {t("all_rights")}
             </p>
           </div>
