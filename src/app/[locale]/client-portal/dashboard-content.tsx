@@ -218,34 +218,19 @@ export default function DashboardContent({ locale, projects, stats, userName, us
                   ✕
                 </button>
               </div>
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <form action="/api/profile" method="POST" className="space-y-4">
+                <input type="hidden" name="locale" value={locale} />
                 <div>
-                  <label className="mb-1 block text-sm text-gray-400">{locale === "ar" ? "نوع المشروع" : "Project Type"}</label>
-                  <select className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white outline-none focus:border-[#BF953F]/50 transition-colors">
-                    <option value="">{locale === "ar" ? "اختر النوع" : "Select type"}</option>
-                    <option value="website">{locale === "ar" ? "موقع إلكتروني" : "Website"}</option>
-                    <option value="design">{locale === "ar" ? "تصميم" : "Design"}</option>
-                    <option value="marketing">{locale === "ar" ? "تسويق" : "Marketing"}</option>
-                    <option value="printing">{locale === "ar" ? "طباعة" : "Printing"}</option>
-                    <option value="branding">{locale === "ar" ? "هوية تجارية" : "Branding"}</option>
-                  </select>
+                  <label className="mb-1 block text-xs text-gray-500">{locale === "ar" ? "الاسم" : "Name"}</label>
+                  <input name="full_name" type="text" defaultValue={userName || ""} className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white outline-none focus:border-[#BF953F]/50 transition-colors" />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm text-gray-400">{locale === "ar" ? "الميزانية التقريبية" : "Estimated Budget"}</label>
-                  <input type="text" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white outline-none focus:border-[#BF953F]/50 transition-colors" placeholder={locale === "ar" ? "مثلاً: 5000 - 10000 ريال" : "e.g. $1000 - $5000"} />
+                  <label className="mb-1 block text-xs text-gray-500">{locale === "ar" ? "رقم الهاتف" : "Phone"}</label>
+                  <input name="phone" type="tel" className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white outline-none focus:border-[#BF953F]/50 transition-colors" placeholder="+20..." />
                 </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-400">{locale === "ar" ? "وصف المشروع" : "Project Brief"}</label>
-                  <textarea rows={4} className="w-full rounded-xl border border-white/10 bg-black/50 px-4 py-2.5 text-sm text-white outline-none focus:border-[#BF953F]/50 transition-colors resize-none" placeholder={locale === "ar" ? "اشرح فكرة مشروعك..." : "Describe your project..."} />
-                </div>
-                <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => setShowNewProject(false)} className="flex-1 rounded-xl border border-white/10 px-4 py-2.5 text-sm text-gray-400 hover:text-white transition-colors">
-                    {locale === "ar" ? "إلغاء" : "Cancel"}
-                  </button>
-                  <button type="submit" className="flex-1 rounded-xl bg-gradient-to-r from-[#BF953F] to-[#B38728] px-4 py-2.5 text-sm font-semibold text-black hover:brightness-110 transition-all">
-                    {locale === "ar" ? "إرسال الطلب" : "Submit Request"}
-                  </button>
-                </div>
+                <button type="submit" className="w-full rounded-xl bg-gradient-to-r from-[#BF953F] to-[#B38728] px-4 py-2.5 text-sm font-semibold text-black hover:brightness-110 transition-all">
+                  {locale === "ar" ? "حفظ التغييرات" : "Save Changes"}
+                </button>
               </form>
             </motion.div>
           </motion.div>
