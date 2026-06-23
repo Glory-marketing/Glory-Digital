@@ -12,6 +12,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Glory Agency (Advertising & Marketing)",
   description: "Premium advertising, marketing, design & development for brands that demand excellence",
+  verification: {
+    google: "googleeed573973f428635",
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
